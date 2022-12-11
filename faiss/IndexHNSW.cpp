@@ -34,6 +34,9 @@
 #include <faiss/utils/random.h>
 #include <faiss/utils/sorting.h>
 
+// # added
+#include <iostream>
+
 extern "C" {
 
 /* declare BLAS functions, see http://www.netlib.org/clapack/cblas/ */
@@ -254,14 +257,14 @@ IndexHNSW::IndexHNSW(int d, int M, MetricType metric)
           hnsw(M),
           own_fields(false),
           storage(nullptr),
-          reconstruct_from_neighbors(nullptr) {}
+          reconstruct_from_neighbors(nullptr) {printf("---HELLO WORLD from HNSW\n");}
 
 IndexHNSW::IndexHNSW(Index* storage, int M)
         : Index(storage->d, storage->metric_type),
           hnsw(M),
           own_fields(false),
           storage(storage),
-          reconstruct_from_neighbors(nullptr) {}
+          reconstruct_from_neighbors(nullptr) {printf("---HELLO WORLD from HNSW\n");}
 
 IndexHNSW::~IndexHNSW() {
     if (own_fields) {
@@ -612,6 +615,11 @@ void IndexHNSW::link_singletons() {
     for (int i = 0; i < singletons.size(); i++) {
         FAISS_ASSERT(!"not implemented");
     }
+}
+
+// added for debugging
+void IndexHNSW::printStats() {
+    std::cout << "HNSW Stats:" << "\n\tmax level:" << hnsw.max_level << std::endl;
 }
 
 /**************************************************************
