@@ -1,0 +1,96 @@
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target demo_ivfpq_indexing
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[ 97%] Building CXX object demos/CMakeFiles/demo_ivfpq_indexing.dir/demo_ivfpq_indexing.cpp.o
+[100%] Linking CXX executable demo_ivfpq_indexing
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target demo_ivfpq_indexing
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+Index Params -- d: 128, M: 32, nb: 100000
+HNSW index created
+====================
+START: running tests for hnsw...
+[0.000 s] Building a dataset of 100000 vectors to index
+[1.070 s] Adding the vectors to the index
+[736.892 s] Vectors added
+HNSW Stats:
+	max level:3
+========= LEVEL 0 =======
+stats on level 0, max 64 neighbors per vertex:
+   nb of nodes at that level 100000
+   neighbors per node: 47.64 (4763703)
+   nb of reciprocal neighbors: 27.53
+   nb of neighbors that are also neighbor-of-neighbors: 33.84 (3383965)
+========= LEVEL 1 =======
+stats on level 1, max 32 neighbors per vertex:
+   nb of nodes at that level 3188
+   neighbors per node: 20.37 (64954)
+   nb of reciprocal neighbors: 17.10
+   nb of neighbors that are also neighbor-of-neighbors: 4.42 (14098)
+========= LEVEL 2 =======
+stats on level 2, max 32 neighbors per vertex:
+   nb of nodes at that level 95
+   neighbors per node: 10.21 (970)
+   nb of reciprocal neighbors: 9.33
+   nb of neighbors that are also neighbor-of-neighbors: 4.78 (454)
+-----DONE-----
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target demo_ivfpq_indexing
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[ 97%] Building CXX object demos/CMakeFiles/demo_ivfpq_indexing.dir/demo_ivfpq_indexing.cpp.o
+[100%] Linking CXX executable demo_ivfpq_indexing
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target demo_ivfpq_indexing
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+Index Params -- d: 128, M: 32, nb: 1000000
+HNSW index created
+====================
+START: running tests for hnsw...
+[0.000 s] Building a dataset of 1000000 vectors to index
+[10.858 s] Adding the vectors to the index
+[10786.511 s] Vectors added
+HNSW Stats:
+	max level:4
+========= LEVEL 0 =======
+stats on level 0, max 64 neighbors per vertex:
+   nb of nodes at that level 1000000
+   neighbors per node: 46.48 (46483842)
+   nb of reciprocal neighbors: 22.10
+   nb of neighbors that are also neighbor-of-neighbors: 31.68 (31678800)
+========= LEVEL 1 =======
+stats on level 1, max 32 neighbors per vertex:
+   nb of nodes at that level 31254
+   neighbors per node: 19.19 (599810)
+   nb of reciprocal neighbors: 13.74
+   nb of neighbors that are also neighbor-of-neighbors: 1.95 (60874)
+========= LEVEL 2 =======
+stats on level 2, max 32 neighbors per vertex:
+   nb of nodes at that level 978
+   neighbors per node: 19.75 (19312)
+   nb of reciprocal neighbors: 17.73
+   nb of neighbors that are also neighbor-of-neighbors: 6.98 (6825)
+========= LEVEL 3 =======
+stats on level 3, max 32 neighbors per vertex:
+   nb of nodes at that level 27
+   neighbors per node: 26.00 (702)
+   nb of reciprocal neighbors: 26.00
+   nb of neighbors that are also neighbor-of-neighbors: 26.00 (702)
+-----DONE-----

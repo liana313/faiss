@@ -69,7 +69,7 @@ int main() {
     
     int d = 128; // dimension of the vectors to index
     int M = 32; // HSNW param M
-    size_t nb = 1000; // size of the database we plan to index
+    size_t nb = 1000000; // size of the database we plan to index
     debug("Index Params -- d: %d, M: %d, nb: %ld\n", d, M, nb);
     
     faiss::IndexHNSWFlat index(d, M);
@@ -94,6 +94,8 @@ int main() {
         printf("[%.3f s] Adding the vectors to the index\n", elapsed() - t0);
 
         index.add(nb, database.data());
+
+        printf("[%.3f s] Vectors added\n", elapsed() - t0);
 
         // TODO: print out stats here
         // printf("[%.3f s] imbalance factor: %g\n",

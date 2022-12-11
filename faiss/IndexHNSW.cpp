@@ -257,14 +257,14 @@ IndexHNSW::IndexHNSW(int d, int M, MetricType metric)
           hnsw(M),
           own_fields(false),
           storage(nullptr),
-          reconstruct_from_neighbors(nullptr) {printf("---HELLO WORLD from HNSW\n");}
+          reconstruct_from_neighbors(nullptr) {}
 
 IndexHNSW::IndexHNSW(Index* storage, int M)
         : Index(storage->d, storage->metric_type),
           hnsw(M),
           own_fields(false),
           storage(storage),
-          reconstruct_from_neighbors(nullptr) {printf("---HELLO WORLD from HNSW\n");}
+          reconstruct_from_neighbors(nullptr) {}
 
 IndexHNSW::~IndexHNSW() {
     if (own_fields) {
@@ -620,6 +620,10 @@ void IndexHNSW::link_singletons() {
 // added for debugging
 void IndexHNSW::printStats() {
     std::cout << "HNSW Stats:" << "\n\tmax level:" << hnsw.max_level << std::endl;
+    for (int level = 0; level < hnsw.max_level; level++) {
+        printf("========= LEVEL %d =======\n", level);
+        hnsw.print_neighbor_stats(level);
+    }
 }
 
 /**************************************************************
