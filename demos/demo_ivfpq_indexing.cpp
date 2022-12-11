@@ -69,7 +69,7 @@ int main() {
     
     int d = 128; // dimension of the vectors to index
     int M = 32; // HSNW param M
-    size_t nb = 1000000; // size of the database we plan to index
+    size_t nb = 1000 * 1000; // size of the database we plan to index
     debug("Index Params -- d: %d, M: %d, nb: %ld\n", d, M, nb);
     
     faiss::IndexHNSWFlat index(d, M);
