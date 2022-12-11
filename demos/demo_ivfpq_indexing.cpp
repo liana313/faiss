@@ -26,6 +26,9 @@
 #include <sys/resource.h>
 #include <pthread.h>
 #include <iostream>
+#include <sstream>      // for ostringstream
+#include <fstream>  
+#include <iosfwd>
 
 
 int debugFlag = 1;  // set to 1 for moderate detail, set to 2 for more detail
@@ -69,7 +72,7 @@ int main() {
     
     int d = 128; // dimension of the vectors to index
     int M = 32; // HSNW param M
-    size_t nb = 1000 * 1000; // size of the database we plan to index
+    size_t nb = 1000; // size of the database we plan to index
     debug("Index Params -- d: %d, M: %d, nb: %ld\n", d, M, nb);
     
     faiss::IndexHNSWFlat index(d, M);
@@ -115,9 +118,31 @@ int main() {
         }
     }
 
-    {
-        // print out stats
+    { // print out stats
         index.printStats();
+    }
+
+    { // get index size
+        
+        //  file name
+        std::ostringstream ss;
+        ss << "./tmp/index_hnsw_N=" << nb << ".faissindex";
+        std::string s_tmp = ss.str();
+        const char* outfilename = s_tmp.c_str();
+        // const char* outfilename = "/tmp/index_hnsw.faissindex";
+        printf("[%.3f s] storing the hnsw index to %s\n",
+               elapsed() - t0,
+               outfilename);
+
+        // write index to disk
+        write_index(&index, outfilename);
+
+        //  measure file size
+        std::ifstream in_file(outfilename, std::ios::binary);
+        in_file.seekg(0, std::ios::end);
+        int file_size = in_file.tellg();
+        std::cout<<"Size of the file is"<<" "<< file_size<<" "<<"bytes" << std::endl;
+        
     }
 
     printf("-----DONE-----\n");
