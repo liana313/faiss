@@ -68,3 +68,41 @@ make[1]: Leaving directory '/home/ubuntu/faiss/build'
 make: Leaving directory '/home/ubuntu/faiss/build'
 Index Params -- d: 128, M: 32, nb: 1000000
 HNSW index created
+====================
+START: running tests for hnsw...
+[0.000 s] Building a dataset of 1000000 vectors to index
+[10.821 s] Adding the vectors to the index
+[10450.339 s] Vectors added
+HNSW Stats:
+	max level:4
+========= LEVEL 0 =======
+stats on level 0, max 64 neighbors per vertex:
+   nb of nodes at that level 1000000
+   neighbors per node: 46.49 (46492499)
+   nb of reciprocal neighbors: 22.10
+   nb of neighbors that are also neighbor-of-neighbors: 31.71 (31710686)
+========= LEVEL 1 =======
+stats on level 1, max 32 neighbors per vertex:
+   nb of nodes at that level 31254
+   neighbors per node: 19.19 (599634)
+   nb of reciprocal neighbors: 13.72
+   nb of neighbors that are also neighbor-of-neighbors: 1.95 (60926)
+========= LEVEL 2 =======
+stats on level 2, max 32 neighbors per vertex:
+   nb of nodes at that level 978
+   neighbors per node: 19.82 (19383)
+   nb of reciprocal neighbors: 17.82
+   nb of neighbors that are also neighbor-of-neighbors: 7.04 (6881)
+========= LEVEL 3 =======
+stats on level 3, max 32 neighbors per vertex:
+   nb of nodes at that level 27
+   neighbors per node: 26.00 (702)
+   nb of reciprocal neighbors: 26.00
+   nb of neighbors that are also neighbor-of-neighbors: 26.00 (702)
+========= LEVEL 4 =======
+stats on level 4, max 32 neighbors per vertex:
+   nb of nodes at that level 1
+   neighbors per node: 0.00 (0)
+   nb of reciprocal neighbors: 0.00
+   nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
+-----DONE-----
