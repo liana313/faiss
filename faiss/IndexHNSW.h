@@ -84,6 +84,7 @@ struct IndexHNSW : Index {
 
     ~IndexHNSW() override;
 
+    // add n vectors of dimension d to the index, x is the matrix of vectors
     void add(idx_t n, const float* x) override;
 
     /// Trains the storage if needed

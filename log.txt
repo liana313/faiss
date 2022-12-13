@@ -1,3 +1,16 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/faiss/build
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target faiss
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
 make: Entering directory '/home/ubuntu/faiss/build'
 make[1]: Entering directory '/home/ubuntu/faiss/build'
 make[2]: Entering directory '/home/ubuntu/faiss/build'
@@ -5,104 +18,323 @@ make[3]: Entering directory '/home/ubuntu/faiss/build'
 make[3]: Leaving directory '/home/ubuntu/faiss/build'
 [ 97%] Built target faiss
 make[3]: Entering directory '/home/ubuntu/faiss/build'
-Consolidate compiler generated dependencies of target demo_ivfpq_indexing
+Consolidate compiler generated dependencies of target demo_new_test
 make[3]: Leaving directory '/home/ubuntu/faiss/build'
-make[3]: Entering directory '/home/ubuntu/faiss/build'
-[ 97%] Building CXX object demos/CMakeFiles/demo_ivfpq_indexing.dir/demo_ivfpq_indexing.cpp.o
-[100%] Linking CXX executable demo_ivfpq_indexing
-make[3]: Leaving directory '/home/ubuntu/faiss/build'
-[100%] Built target demo_ivfpq_indexing
+[100%] Built target demo_new_test
 make[2]: Leaving directory '/home/ubuntu/faiss/build'
 make[1]: Leaving directory '/home/ubuntu/faiss/build'
 make: Leaving directory '/home/ubuntu/faiss/build'
-Index Params -- d: 128, M: 32, nb: 100000
-HNSW index created
 ====================
 START: running tests for hnsw...
-[0.000 s] Building a dataset of 100000 vectors to index
-[1.072 s] Adding the vectors to the index
-[748.867 s] Vectors added
+--nb: 1000
+--M: 32
+[0.000 s] Index Params -- d: 128, M: 32, nb: 1000
+--HNSW index created
+[0.000 s] Building a dataset of 1000 vectors to index
+[0.011 s] Adding the vectors to the index
+[0.370 s] Vectors added
 HNSW Stats:
-	max level:3
+	max level:2
 ========= LEVEL 0 =======
 stats on level 0, max 64 neighbors per vertex:
-   nb of nodes at that level 100000
-   neighbors per node: 47.64 (4763913)
-   nb of reciprocal neighbors: 27.51
-   nb of neighbors that are also neighbor-of-neighbors: 33.84 (3383538)
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 64
+	indx 2: 96
+	indx 3: 128
+	indx 4: 160
+	indx 5: 192
+   nb of nodes at that level 1000
+   neighbors per node: 43.87 (43871)
+   nb of reciprocal neighbors: 32.71
+   nb of neighbors that are also neighbor-of-neighbors: 41.68 (41684)
 ========= LEVEL 1 =======
 stats on level 1, max 32 neighbors per vertex:
-   nb of nodes at that level 3188
-   neighbors per node: 20.39 (65015)
-   nb of reciprocal neighbors: 17.11
-   nb of neighbors that are also neighbor-of-neighbors: 4.44 (14144)
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 64
+	indx 2: 96
+	indx 3: 128
+	indx 4: 160
+	indx 5: 192
+   nb of nodes at that level 26
+   neighbors per node: 25.00 (650)
+   nb of reciprocal neighbors: 25.00
+   nb of neighbors that are also neighbor-of-neighbors: 25.00 (650)
 ========= LEVEL 2 =======
 stats on level 2, max 32 neighbors per vertex:
-   nb of nodes at that level 95
-   neighbors per node: 10.21 (970)
-   nb of reciprocal neighbors: 9.33
-   nb of neighbors that are also neighbor-of-neighbors: 4.78 (454)
-========= LEVEL 3 =======
-stats on level 3, max 32 neighbors per vertex:
-   nb of nodes at that level 3
-   neighbors per node: 2.00 (6)
-   nb of reciprocal neighbors: 2.00
-   nb of neighbors that are also neighbor-of-neighbors: 2.00 (6)
------DONE-----
-make: Entering directory '/home/ubuntu/faiss/build'
-make[1]: Entering directory '/home/ubuntu/faiss/build'
-make[2]: Entering directory '/home/ubuntu/faiss/build'
-make[3]: Entering directory '/home/ubuntu/faiss/build'
-make[3]: Leaving directory '/home/ubuntu/faiss/build'
-[ 97%] Built target faiss
-make[3]: Entering directory '/home/ubuntu/faiss/build'
-Consolidate compiler generated dependencies of target demo_ivfpq_indexing
-make[3]: Leaving directory '/home/ubuntu/faiss/build'
-make[3]: Entering directory '/home/ubuntu/faiss/build'
-[ 97%] Building CXX object demos/CMakeFiles/demo_ivfpq_indexing.dir/demo_ivfpq_indexing.cpp.o
-[100%] Linking CXX executable demo_ivfpq_indexing
-make[3]: Leaving directory '/home/ubuntu/faiss/build'
-[100%] Built target demo_ivfpq_indexing
-make[2]: Leaving directory '/home/ubuntu/faiss/build'
-make[1]: Leaving directory '/home/ubuntu/faiss/build'
-make: Leaving directory '/home/ubuntu/faiss/build'
-Index Params -- d: 128, M: 32, nb: 1000000
-HNSW index created
-====================
-START: running tests for hnsw...
-[0.000 s] Building a dataset of 1000000 vectors to index
-[10.821 s] Adding the vectors to the index
-[10450.339 s] Vectors added
-HNSW Stats:
-	max level:4
-========= LEVEL 0 =======
-stats on level 0, max 64 neighbors per vertex:
-   nb of nodes at that level 1000000
-   neighbors per node: 46.49 (46492499)
-   nb of reciprocal neighbors: 22.10
-   nb of neighbors that are also neighbor-of-neighbors: 31.71 (31710686)
-========= LEVEL 1 =======
-stats on level 1, max 32 neighbors per vertex:
-   nb of nodes at that level 31254
-   neighbors per node: 19.19 (599634)
-   nb of reciprocal neighbors: 13.72
-   nb of neighbors that are also neighbor-of-neighbors: 1.95 (60926)
-========= LEVEL 2 =======
-stats on level 2, max 32 neighbors per vertex:
-   nb of nodes at that level 978
-   neighbors per node: 19.82 (19383)
-   nb of reciprocal neighbors: 17.82
-   nb of neighbors that are also neighbor-of-neighbors: 7.04 (6881)
-========= LEVEL 3 =======
-stats on level 3, max 32 neighbors per vertex:
-   nb of nodes at that level 27
-   neighbors per node: 26.00 (702)
-   nb of reciprocal neighbors: 26.00
-   nb of neighbors that are also neighbor-of-neighbors: 26.00 (702)
-========= LEVEL 4 =======
-stats on level 4, max 32 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 64
+	indx 2: 96
+	indx 3: 128
+	indx 4: 160
+	indx 5: 192
    nb of nodes at that level 1
    neighbors per node: 0.00 (0)
    nb of reciprocal neighbors: 0.00
    nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
+[0.443 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+====Size of the file is 783682 bytes
+-----DONE-----
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/faiss/build
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[  2%] Building CXX object faiss/CMakeFiles/faiss.dir/impl/HNSW.cpp.o
+[  5%] Linking CXX shared library libfaiss.so
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target faiss
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[100%] Linking CXX executable demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target demo_new_test
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+====================
+START: running tests for hnsw...
+--nb: 1000
+--M: 32
+[0.000 s] Index Params -- d: 128, M: 32, nb: 1000
+--HNSW index created
+[0.000 s] Building a dataset of 1000 vectors to index
+[0.011 s] Adding the vectors to the index
+[1.724 s] Vectors added
+HNSW Stats:
+	max level:2
+========= LEVEL 0 =======
+stats on level 0, max 640 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1000
+   neighbors per node: 316.98 (316981)
+   nb of reciprocal neighbors: 230.82
+   nb of neighbors that are also neighbor-of-neighbors: 316.98 (316981)
+========= LEVEL 1 =======
+stats on level 1, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 26
+   neighbors per node: 25.00 (650)
+   nb of reciprocal neighbors: 25.00
+   nb of neighbors that are also neighbor-of-neighbors: 25.00 (650)
+========= LEVEL 2 =======
+stats on level 2, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1
+   neighbors per node: 0.00 (0)
+   nb of reciprocal neighbors: 0.00
+   nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
+[4.166 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+====Size of the file is 3118786 bytes
+-----DONE-----
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/faiss/build
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[  2%] Building CXX object faiss/CMakeFiles/faiss.dir/impl/HNSW.cpp.o
+[  5%] Linking CXX shared library libfaiss.so
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target faiss
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[100%] Linking CXX executable demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target demo_new_test
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+====================
+START: running tests for hnsw...
+--nb: 1000
+--M: 32
+[0.000 s] Index Params -- d: 128, M: 32, nb: 1000
+--HNSW index created
+[0.000 s] Building a dataset of 1000 vectors to index
+[0.011 s] Adding the vectors to the index
+[1.951 s] Vectors added
+HNSW Stats:
+	max level:2
+========= LEVEL 0 =======
+stats on level 0, max 640 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1000
+   neighbors per node: 28.78 (28785)
+   nb of reciprocal neighbors: 19.98
+   nb of neighbors that are also neighbor-of-neighbors: 13.03 (13031)
+========= LEVEL 1 =======
+stats on level 1, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 26
+   neighbors per node: 25.00 (650)
+   nb of reciprocal neighbors: 25.00
+   nb of neighbors that are also neighbor-of-neighbors: 25.00 (650)
+========= LEVEL 2 =======
+stats on level 2, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1
+   neighbors per node: 0.00 (0)
+   nb of reciprocal neighbors: 0.00
+   nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
+[1.999 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+====Size of the file is 3118786 bytes
+-----DONE-----
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/faiss/build
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[  2%] Building CXX object faiss/CMakeFiles/faiss.dir/impl/HNSW.cpp.o
+[  5%] Linking CXX shared library libfaiss.so
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target faiss
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+make: Entering directory '/home/ubuntu/faiss/build'
+make[1]: Entering directory '/home/ubuntu/faiss/build'
+make[2]: Entering directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+Consolidate compiler generated dependencies of target demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+make[3]: Entering directory '/home/ubuntu/faiss/build'
+[100%] Linking CXX executable demo_new_test
+make[3]: Leaving directory '/home/ubuntu/faiss/build'
+[100%] Built target demo_new_test
+make[2]: Leaving directory '/home/ubuntu/faiss/build'
+make[1]: Leaving directory '/home/ubuntu/faiss/build'
+make: Leaving directory '/home/ubuntu/faiss/build'
+====================
+START: running tests for hnsw...
+--nb: 1000
+--M: 32
+[0.000 s] Index Params -- d: 128, M: 32, nb: 1000
+--HNSW index created
+[0.000 s] Building a dataset of 1000 vectors to index
+[0.011 s] Adding the vectors to the index
+[1.746 s] Vectors added
+HNSW Stats:
+	max level:2
+========= LEVEL 0 =======
+stats on level 0, max 640 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1000
+   neighbors per node: 316.97 (316971)
+   nb of reciprocal neighbors: 230.78
+   nb of neighbors that are also neighbor-of-neighbors: 316.97 (316971)
+========= LEVEL 1 =======
+stats on level 1, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 26
+   neighbors per node: 25.00 (650)
+   nb of reciprocal neighbors: 25.00
+   nb of neighbors that are also neighbor-of-neighbors: 25.00 (650)
+========= LEVEL 2 =======
+stats on level 2, max 320 neighbors per vertex:
+=== cumulative num neighbors per level
+	indx 0: 0
+	indx 1: 640
+	indx 2: 960
+	indx 3: 1280
+	indx 4: 1600
+	indx 5: 1920
+   nb of nodes at that level 1
+   neighbors per node: 0.00 (0)
+   nb of reciprocal neighbors: 0.00
+   nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
+[4.217 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+====Size of the file is 3118786 bytes
 -----DONE-----

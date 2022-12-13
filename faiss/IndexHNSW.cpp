@@ -359,6 +359,7 @@ void IndexHNSW::search(
     hnsw_stats.combine({n1, n2, n3, ndis, nreorder});
 }
 
+// add n vectors of dimension d to the index, x is the matrix of vectors
 void IndexHNSW::add(idx_t n, const float* x) {
     FAISS_THROW_IF_NOT_MSG(
             storage,

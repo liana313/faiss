@@ -50,7 +50,7 @@ HNSW::HNSW(int M) : rng(12345) {
     max_level = -1;
     entry_point = -1;
     efSearch = 16;
-    efConstruction = 40;
+    efConstruction = 40 * 10; //TODO edit
     upper_beam = 1;
     offsets.push_back(0);
 }
@@ -76,7 +76,7 @@ void HNSW::set_default_probas(int M, float levelMult) {
         if (proba < 1e-9)
             break;
         assign_probas.push_back(proba);
-        nn += level == 0 ? M * 2 : M;
+        nn += level == 0 ? M * 2 * 10: M * 10; // TODO - edit here
         cum_nneighbor_per_level.push_back(nn);
     }
 }
@@ -105,6 +105,11 @@ void HNSW::print_neighbor_stats(int level) const {
     printf("stats on level %d, max %d neighbors per vertex:\n",
            level,
            nb_neighbors(level));
+    printf("=== cumulative num neighbors per level\n");
+    for (int i = 0; i < cum_nneighbor_per_level.size() - 1; i++) {
+        printf("\tindx %d: %d\n", i, cum_nneighbor_per_level[i]);
+    }
+
     size_t tot_neigh = 0, tot_common = 0, tot_reciprocal = 0, n_node = 0;
 #pragma omp parallel for reduction(+: tot_neigh) reduction(+: tot_common) \
   reduction(+: tot_reciprocal) reduction(+: n_node)
@@ -159,6 +164,96 @@ void HNSW::print_neighbor_stats(int level) const {
            tot_common / normalizer,
            tot_common);
 }
+
+
+
+void HNSW::clear_neighbor_tables(int level) {
+    for (int i = 0; i < levels.size(); i++) {
+        size_t begin, end;
+        neighbor_range(i, level, &begin, &end);
+        for (size_t j = begin; j < end; j++) {
+            neighbors[j] = -1;
+        }
+    }
+}
+
+void HNSW::reset() {
+    max_level = -1;
+    entry_point = -1;
+    offsets.clear();
+    offsets.push_back(0);
+    levels.clear();
+    neighbors.clear();
+}
+
+// stats for all levels
+void HNSW::print_neighbor_stats() const {
+    FAISS_THROW_IF_NOT(level < cum_nneighbor_per_level.size());
+    printf("stats on level %d, max %d neighbors per vertex:\n",
+           level,
+           nb_neighbors(level));
+    printf("=== cumulative num neighbors per level\n");
+    for (int i = 0; i < cum_nneighbor_per_level.size() - 1; i++) {
+        printf("\tindx %d: %d\n", i, cum_nneighbor_per_level[i]);
+    }
+
+    size_t tot_neigh = 0, tot_common = 0, tot_reciprocal = 0, n_node = 0;
+#pragma omp parallel for reduction(+: tot_neigh) reduction(+: tot_common) \
+  reduction(+: tot_reciprocal) reduction(+: n_node)
+    for (int i = 0; i < levels.size(); i++) {
+        if (levels[i] > level) {
+            n_node++;
+            size_t begin, end;
+            neighbor_range(i, level, &begin, &end);
+            std::unordered_set<int> neighset;
+            for (size_t j = begin; j < end; j++) {
+                if (neighbors[j] < 0)
+                    break;
+                neighset.insert(neighbors[j]);
+            }
+            int n_neigh = neighset.size();
+            int n_common = 0;
+            int n_reciprocal = 0;
+            for (size_t j = begin; j < end; j++) {
+                storage_idx_t i2 = neighbors[j];
+                if (i2 < 0)
+                    break;
+                FAISS_ASSERT(i2 != i);
+                size_t begin2, end2;
+                neighbor_range(i2, level, &begin2, &end2);
+                for (size_t j2 = begin2; j2 < end2; j2++) {
+                    storage_idx_t i3 = neighbors[j2];
+                    if (i3 < 0)
+                        break;
+                    if (i3 == i) {
+                        n_reciprocal++;
+                        continue;
+                    }
+                    if (neighset.count(i3)) {
+                        neighset.erase(i3);
+                        n_common++;
+                    }
+                }
+            }
+            tot_neigh += n_neigh;
+            tot_common += n_common;
+            tot_reciprocal += n_reciprocal;
+        }
+    }
+    float normalizer = n_node;
+    printf("   nb of nodes at that level %zd\n", n_node);
+    printf("   neighbors per node: %.2f (%zd)\n",
+           tot_neigh / normalizer,
+           tot_neigh);
+    printf("   nb of reciprocal neighbors: %.2f\n",
+           tot_reciprocal / normalizer);
+    printf("   nb of neighbors that are also neighbor-of-neighbors: %.2f (%zd)\n",
+           tot_common / normalizer,
+           tot_common);
+}
+
+
+
 
 void HNSW::fill_with_random_links(size_t n) {
     int max_level = prepare_level_tab(n);
