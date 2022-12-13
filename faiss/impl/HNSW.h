@@ -218,6 +218,7 @@ struct HNSW {
 
     void clear_neighbor_tables(int level);
     void print_neighbor_stats(int level) const;
+    void print_neighbor_stats() const;
 
     int prepare_level_tab(size_t n, bool preset_levels = false);
 

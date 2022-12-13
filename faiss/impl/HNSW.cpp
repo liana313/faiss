@@ -102,13 +102,9 @@ void HNSW::reset() {
 
 void HNSW::print_neighbor_stats(int level) const {
     FAISS_THROW_IF_NOT(level < cum_nneighbor_per_level.size());
-    printf("stats on level %d, max %d neighbors per vertex:\n",
+    printf("* stats on level %d, max %d neighbors per vertex:\n",
            level,
            nb_neighbors(level));
-    printf("=== cumulative num neighbors per level\n");
-    for (int i = 0; i < cum_nneighbor_per_level.size() - 1; i++) {
-        printf("\tindx %d: %d\n", i, cum_nneighbor_per_level[i]);
-    }
 
     size_t tot_neigh = 0, tot_common = 0, tot_reciprocal = 0, n_node = 0;
 #pragma omp parallel for reduction(+: tot_neigh) reduction(+: tot_common) \
@@ -154,104 +150,41 @@ void HNSW::print_neighbor_stats(int level) const {
         }
     }
     float normalizer = n_node;
-    printf("   nb of nodes at that level %zd\n", n_node);
-    printf("   neighbors per node: %.2f (%zd)\n",
+    printf("   1. nb of nodes: %zd\n", n_node);
+    printf("   2. neighbors per node: %.2f (%zd)\n",
            tot_neigh / normalizer,
            tot_neigh);
-    printf("   nb of reciprocal neighbors: %.2f\n",
+    printf("   3. nb of reciprocal neighbors: %.2f\n",
            tot_reciprocal / normalizer);
-    printf("   nb of neighbors that are also neighbor-of-neighbors: %.2f (%zd)\n",
+    printf("   4. nb of neighbors that are also neighbor-of-neighbors: %.2f (%zd)\n",
            tot_common / normalizer,
            tot_common);
 }
 
-
-
-void HNSW::clear_neighbor_tables(int level) {
-    for (int i = 0; i < levels.size(); i++) {
-        size_t begin, end;
-        neighbor_range(i, level, &begin, &end);
-        for (size_t j = begin; j < end; j++) {
-            neighbors[j] = -1;
-        }
-    }
-}
-
-void HNSW::reset() {
-    max_level = -1;
-    entry_point = -1;
-    offsets.clear();
-    offsets.push_back(0);
-    levels.clear();
-    neighbors.clear();
-}
-
-// stats for all levels
+// stats for all levels 
 void HNSW::print_neighbor_stats() const {
-    FAISS_THROW_IF_NOT(level < cum_nneighbor_per_level.size());
-    printf("stats on level %d, max %d neighbors per vertex:\n",
-           level,
-           nb_neighbors(level));
-    printf("=== cumulative num neighbors per level\n");
+    printf("========= METADATA =======\n");
+
+    printf("\t* cumulative max num neighbors per level\n");
     for (int i = 0; i < cum_nneighbor_per_level.size() - 1; i++) {
-        printf("\tindx %d: %d\n", i, cum_nneighbor_per_level[i]);
+        printf("\t\tindx %d: %d\n", i, cum_nneighbor_per_level[i]);
     }
+    printf("\t* level probabilities\n");
+    for (int level = 0; level < assign_probas.size(); level++) {
+        printf("\t\tlevel %d: %f\n", level, assign_probas[level]);
+    }
+    printf("\t* efConstruction: %d\n", efConstruction);
+    printf("\t* efSearch: %d\n", efSearch);
+    printf("\t* max_level: %d\n", max_level);
+    printf("\t* entry_point: %d\n", entry_point);
 
-    size_t tot_neigh = 0, tot_common = 0, tot_reciprocal = 0, n_node = 0;
-#pragma omp parallel for reduction(+: tot_neigh) reduction(+: tot_common) \
-  reduction(+: tot_reciprocal) reduction(+: n_node)
-    for (int i = 0; i < levels.size(); i++) {
-        if (levels[i] > level) {
-            n_node++;
-            size_t begin, end;
-            neighbor_range(i, level, &begin, &end);
-            std::unordered_set<int> neighset;
-            for (size_t j = begin; j < end; j++) {
-                if (neighbors[j] < 0)
-                    break;
-                neighset.insert(neighbors[j]);
-            }
-            int n_neigh = neighset.size();
-            int n_common = 0;
-            int n_reciprocal = 0;
-            for (size_t j = begin; j < end; j++) {
-                storage_idx_t i2 = neighbors[j];
-                if (i2 < 0)
-                    break;
-                FAISS_ASSERT(i2 != i);
-                size_t begin2, end2;
-                neighbor_range(i2, level, &begin2, &end2);
-                for (size_t j2 = begin2; j2 < end2; j2++) {
-                    storage_idx_t i3 = neighbors[j2];
-                    if (i3 < 0)
-                        break;
-                    if (i3 == i) {
-                        n_reciprocal++;
-                        continue;
-                    }
-                    if (neighset.count(i3)) {
-                        neighset.erase(i3);
-                        n_common++;
-                    }
-                }
-            }
-            tot_neigh += n_neigh;
-            tot_common += n_common;
-            tot_reciprocal += n_reciprocal;
-        }
+
+    // per level stats
+    for (int level = 0; level <= max_level; level++) {
+        printf("========= LEVEL %d =======\n", level);
+        print_neighbor_stats(level);
     }
-    float normalizer = n_node;
-    printf("   nb of nodes at that level %zd\n", n_node);
-    printf("   neighbors per node: %.2f (%zd)\n",
-           tot_neigh / normalizer,
-           tot_neigh);
-    printf("   nb of reciprocal neighbors: %.2f\n",
-           tot_reciprocal / normalizer);
-    printf("   nb of neighbors that are also neighbor-of-neighbors: %.2f (%zd)\n",
-           tot_common / normalizer,
-           tot_common);
 }
-
 
 
 

@@ -620,11 +620,12 @@ void IndexHNSW::link_singletons() {
 
 // added for debugging
 void IndexHNSW::printStats() {
-    std::cout << "HNSW Stats:" << "\n\tmax level:" << hnsw.max_level << std::endl;
-    for (int level = 0; level < hnsw.max_level + 1; level++) {
-        printf("========= LEVEL %d =======\n", level);
-        hnsw.print_neighbor_stats(level);
-    }
+    hnsw.print_neighbor_stats();
+    // std::cout << "HNSW Stats:" << "\n\tmax level:" << hnsw.max_level << std::endl;
+    // for (int level = 0; level < hnsw.max_level + 1; level++) {
+    //     printf("========= LEVEL %d =======\n", level);
+    //     hnsw.print_neighbor_stats(level);
+    // }
 }
 
 /**************************************************************
