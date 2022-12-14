@@ -70,7 +70,7 @@ double elapsed() {
  * Run tests
  *******************************************************/
 
-//  args are nb and M
+//  args are nb, M, gamma
 int main(int argc, char *argv[]) {
     printf("====================\nSTART: running tests for hnsw...\n");
     double t0 = elapsed();
@@ -78,6 +78,7 @@ int main(int argc, char *argv[]) {
     int d = 128; // dimension of the vectors to index
     size_t nb;
     int M;
+    int gamma;
     // int d = 128; // dimension of the vectors to index
     // int M = 32 * 1000; // HSNW param M
     // size_t nb = 1000; // size of the database we plan to index
@@ -85,8 +86,8 @@ int main(int argc, char *argv[]) {
 
     {// parse arguments
 
-        if (argc != 3) {
-            fprintf(stderr, "Syntax: %s nb <filename>\n", argv[0]);
+        if (argc != 4) {
+            fprintf(stderr, "Syntax: %s <number vecs> <M> <gamma>\n", argv[0]);
             exit(1);
         }
 
@@ -95,11 +96,14 @@ int main(int argc, char *argv[]) {
 
         M = atoi(argv[2]);
         debug("M: %d\n", M);
+
+        gamma = atoi(argv[3]);
+        debug("gamma: %d\n", gamma);
     }
     
-    printf("[%.3f s] Index Params -- d: %d, M: %d, nb: %ld\n",
-               elapsed() - t0, d, M, nb);
-    faiss::IndexHNSWFlat index(d, M, 2);
+    printf("[%.3f s] Index Params -- d: %d, M: %d, nb: %ld, gamma: %d\n",
+               elapsed() - t0, d, M, nb, gamma);
+    faiss::IndexHNSWFlat index(d, M, gamma);
     debug("HNSW index created%s\n", "");
     
     std::mt19937 rng; // random generator to be used for creating vectors
