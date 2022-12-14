@@ -252,16 +252,16 @@ void hnsw_add_vertices(
  * IndexHNSW implementation
  **************************************************************/
 
-IndexHNSW::IndexHNSW(int d, int M, MetricType metric)
+IndexHNSW::IndexHNSW(int d, int M, int gamma, MetricType metric)
         : Index(d, metric),
-          hnsw(M),
+          hnsw(M, gamma),
           own_fields(false),
           storage(nullptr),
           reconstruct_from_neighbors(nullptr) {}
 
-IndexHNSW::IndexHNSW(Index* storage, int M)
+IndexHNSW::IndexHNSW(Index* storage, int M, int gamma)
         : Index(storage->d, storage->metric_type),
-          hnsw(M),
+          hnsw(M, gamma),
           own_fields(false),
           storage(storage),
           reconstruct_from_neighbors(nullptr) {}
@@ -621,11 +621,6 @@ void IndexHNSW::link_singletons() {
 // added for debugging
 void IndexHNSW::printStats() {
     hnsw.print_neighbor_stats();
-    // std::cout << "HNSW Stats:" << "\n\tmax level:" << hnsw.max_level << std::endl;
-    // for (int level = 0; level < hnsw.max_level + 1; level++) {
-    //     printf("========= LEVEL %d =======\n", level);
-    //     hnsw.print_neighbor_stats(level);
-    // }
 }
 
 /**************************************************************
@@ -877,8 +872,8 @@ IndexHNSWFlat::IndexHNSWFlat() {
     is_trained = true;
 }
 
-IndexHNSWFlat::IndexHNSWFlat(int d, int M, MetricType metric)
-        : IndexHNSW(new IndexFlat(d, metric), M) {
+IndexHNSWFlat::IndexHNSWFlat(int d, int M, int gamma, MetricType metric)
+        : IndexHNSW(new IndexFlat(d, metric), M, gamma) {
     own_fields = true;
     is_trained = true;
 }

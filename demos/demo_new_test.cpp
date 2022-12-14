@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     
     printf("[%.3f s] Index Params -- d: %d, M: %d, nb: %ld\n",
                elapsed() - t0, d, M, nb);
-    faiss::IndexHNSWFlat index(d, M);
+    faiss::IndexHNSWFlat index(d, M, 2);
     debug("HNSW index created%s\n", "");
     
     std::mt19937 rng; // random generator to be used for creating vectors

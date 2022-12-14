@@ -45,13 +45,26 @@ void HNSW::neighbor_range(idx_t no, int layer_no, size_t* begin, size_t* end)
     *end = o + cum_nb_neighbors(layer_no + 1);
 }
 
-HNSW::HNSW(int M) : rng(12345) {
-    set_default_probas(M, 1.0 / log(M));
+// HNSW::HNSW(int M) : rng(12345) {
+//     set_default_probas(M, 1.0 / log(M));
+//     max_level = -1;
+//     entry_point = -1;
+//     efSearch = 16;
+//     efConstruction = 40 * 10; //TODO edit
+//     upper_beam = 1;
+//     gamma = 1;
+//     offsets.push_back(0);
+// }
+
+HNSW::HNSW(int M, int gamma) : rng(12345) {
+    set_default_probas(M, 1.0 / log(M), gamma);
     max_level = -1;
     entry_point = -1;
     efSearch = 16;
-    efConstruction = 40 * 10; //TODO edit
+    efConstruction = 40 * gamma; //TODO edit
     upper_beam = 1;
+    this->gamma = gamma;
+    // gamma = gamma;
     offsets.push_back(0);
 }
 
@@ -68,15 +81,17 @@ int HNSW::random_level() {
     return assign_probas.size() - 1;
 }
 
-void HNSW::set_default_probas(int M, float levelMult) {
+void HNSW::set_default_probas(int M, float levelMult, int gamma) {
     int nn = 0;
     cum_nneighbor_per_level.push_back(0);
+    // printf("---set_default_probas: gamma: %d\n", this->gamma);
+    // printf("---set_default_probas: gamma: %d\n", gamma);
     for (int level = 0;; level++) {
         float proba = exp(-level / levelMult) * (1 - exp(-1 / levelMult));
         if (proba < 1e-9)
             break;
         assign_probas.push_back(proba);
-        nn += level == 0 ? M * 2 * 10: M * 10; // TODO - edit here
+        nn += level == 0 ? M * 2 * gamma: M * gamma; // TODO - edit here
         cum_nneighbor_per_level.push_back(nn);
     }
 }
@@ -177,6 +192,7 @@ void HNSW::print_neighbor_stats() const {
     printf("\t* efSearch: %d\n", efSearch);
     printf("\t* max_level: %d\n", max_level);
     printf("\t* entry_point: %d\n", entry_point);
+    printf("\t* gamma: %d\n", gamma);
 
 
     // per level stats

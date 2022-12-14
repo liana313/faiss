@@ -125,6 +125,9 @@ struct HNSW {
 
     faiss::RandomGenerator rng;
 
+    /// multiplier of M for max edges per vertex
+    int gamma;
+
     /// maximum level
     int max_level;
 
@@ -148,7 +151,7 @@ struct HNSW {
 
     /// initialize the assign_probas and cum_nneighbor_per_level to
     /// have 2*M links on level 0 and M links on levels > 0
-    void set_default_probas(int M, float levelMult);
+    void set_default_probas(int M, float levelMult, int gamma = 1);
 
     /// set nb of neighbors for this level (before adding anything)
     void set_nb_neighbors(int level_no, int n);
@@ -166,7 +169,8 @@ struct HNSW {
             const;
 
     /// only mandatory parameter: nb of neighbors
-    explicit HNSW(int M = 32);
+    // explicit HNSW(int M = 32);
+    explicit HNSW(int M = 32, int gamma = 1);
 
     /// pick a random level for a new point
     int random_level();

@@ -79,8 +79,8 @@ struct IndexHNSW : Index {
 
     ReconstructFromNeighbors* reconstruct_from_neighbors;
 
-    explicit IndexHNSW(int d = 0, int M = 32, MetricType metric = METRIC_L2);
-    explicit IndexHNSW(Index* storage, int M = 32);
+    explicit IndexHNSW(int d = 0, int M = 32, int gamma = 1, MetricType metric = METRIC_L2);
+    explicit IndexHNSW(Index* storage, int M = 32, int gamma = 1);
 
     ~IndexHNSW() override;
 
@@ -146,7 +146,7 @@ struct IndexHNSW : Index {
 
 struct IndexHNSWFlat : IndexHNSW {
     IndexHNSWFlat();
-    IndexHNSWFlat(int d, int M, MetricType metric = METRIC_L2);
+    IndexHNSWFlat(int d, int M, int gamma = 1, MetricType metric = METRIC_L2);
 };
 
 /** PQ index topped with with a HNSW structure to access elements
