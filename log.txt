@@ -49,3 +49,54 @@ START: running tests for hnsw...
 [30.822 s] storing the hnsw index to ./tmp/index_hnsw_N=10000.faissindex
 ====Size of the file is 7837858 bytes
 -----DONE-----
+====================
+START: running tests for hnsw...
+--nb: 10000
+--M: 32
+--gamma: 100
+[0.000 s] Index Params -- d: 128, M: 32, nb: 10000, gamma: 100
+--HNSW index created
+[0.000 s] Building a dataset of 10000 vectors to index
+[0.110 s] Adding the vectors to the index
+[910.836 s] Vectors added
+========= METADATA =======
+	* cumulative max num neighbors per level
+		indx 0: 0
+		indx 1: 6400
+		indx 2: 9600
+		indx 3: 12800
+		indx 4: 16000
+		indx 5: 19200
+	* level probabilities
+		level 0: 0.968750
+		level 1: 0.030273
+		level 2: 0.000946
+		level 3: 0.000030
+		level 4: 0.000001
+		level 5: 0.000000
+	* efConstruction: 4000
+	* efSearch: 16
+	* max_level: 2
+	* entry_point: 8947
+	* gamma: 100
+========= LEVEL 0 =======
+* stats on level 0, max 6400 neighbors per vertex:
+   1. nb of nodes: 10000
+   2. neighbors per node: 3151.90 (31518973)
+   3. nb of reciprocal neighbors: 2281.96
+   4. nb of neighbors that are also neighbor-of-neighbors: 3151.90 (31518973)
+========= LEVEL 1 =======
+* stats on level 1, max 3200 neighbors per vertex:
+   1. nb of nodes: 287
+   2. neighbors per node: 284.85 (81752)
+   3. nb of reciprocal neighbors: 284.85
+   4. nb of neighbors that are also neighbor-of-neighbors: 284.85 (81752)
+========= LEVEL 2 =======
+* stats on level 2, max 3200 neighbors per vertex:
+   1. nb of nodes: 7
+   2. neighbors per node: 6.00 (42)
+   3. nb of reciprocal neighbors: 6.00
+   4. nb of neighbors that are also neighbor-of-neighbors: 6.00 (42)
+[2940.269 s] storing the hnsw index to ./tmp/index_hnsw_N=10000.faissindex
+====Size of the file is 265003426 bytes
+-----DONE-----
