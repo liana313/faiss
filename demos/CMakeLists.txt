@@ -27,3 +27,6 @@ target_link_libraries(demo_residual_quantizer PRIVATE faiss)
 
 add_executable(demo_new_test EXCLUDE_FROM_ALL demo_new_test.cpp)
 target_link_libraries(demo_new_test PRIVATE faiss)
+
+add_executable(demo_test_search EXCLUDE_FROM_ALL demo_test_search.cpp)
+target_link_libraries(demo_test_search PRIVATE faiss)
