@@ -78,35 +78,39 @@ int main(int argc, char *argv[]) {
     double t0 = elapsed();
     int opt;
     int d = 128; // dimension of the vectors to index
-    size_t nb;
-    int M;
-    int gamma;
+    size_t nb = 10;
+    int M = 3;
+    int gamma = 1;
+    int efc = 4;
+    int efs = 2;
     int k = 10; // search parameter
     // int d = 128; // dimension of the vectors to index
     // int M = 32 * 1000; // HSNW param M
     // size_t nb = 1000; // size of the database we plan to index
 
 
-    {// parse arguments
+    // {// parse arguments
 
-        if (argc != 4) {
-            fprintf(stderr, "Syntax: %s <number vecs> <M> <gamma>\n", argv[0]);
-            exit(1);
-        }
+    //     if (argc != 4) {
+    //         fprintf(stderr, "Syntax: %s <number vecs> <M> <gamma>\n", argv[0]);
+    //         exit(1);
+    //     }
 
-        nb = strtoul(argv[1], NULL, 10);
-        debug("nb: %ld\n", nb);
+    //     nb = strtoul(argv[1], NULL, 10);
+    //     debug("nb: %ld\n", nb);
 
-        M = atoi(argv[2]);
-        debug("M: %d\n", M);
+    //     M = atoi(argv[2]);
+    //     debug("M: %d\n", M);
 
-        gamma = atoi(argv[3]);
-        debug("gamma: %d\n", gamma);
-    }
+    //     gamma = atoi(argv[3]);
+    //     debug("gamma: %d\n", gamma);
+    // }
     
     printf("[%.3f s] Index Params -- d: %d, M: %d, nb: %ld, gamma: %d\n",
                elapsed() - t0, d, M, nb, gamma);
     faiss::IndexHNSWFlat index(d, M, gamma);
+    index.hnsw.efConstruction = efc; // default is 40 *gamma in HNSW.capp
+    index.hnsw.efSearch = efs; // default is 16 *gamma in HNSW.capp
     debug("HNSW index created%s\n", "");
     
     std::mt19937 rng; // random generator to be used for creating vectors

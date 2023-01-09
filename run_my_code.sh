@@ -9,4 +9,9 @@
 cmake -DFAISS_ENABLE_GPU=OFF -DFAISS_ENABLE_PYTHON=OFF -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON -B build
 make -C build -j faiss
 make -C build demo_test_search
-./build/demos/demo_test_search 100 32 1
+make -C build demo_test_search_small
+
+# executable to run
+# ./build/demos/demo_test_search 100 32 1
+# ./build/demos/demo_test_search 10 3 1 &> log.txt
+./build/demos/demo_test_search_small &> log.txt
