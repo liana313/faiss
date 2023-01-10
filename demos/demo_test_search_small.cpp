@@ -77,7 +77,8 @@ int main(int argc, char *argv[]) {
     printf("====================\nSTART: running tests for hnsw...\n");
     double t0 = elapsed();
     int opt;
-    int d = 128; // dimension of the vectors to index
+    // int d = 128; // dimension of the vectors to index
+    int d = 1; // dimension of the vectors to index
     size_t nb = 10;
     int M = 3;
     int gamma = 1;
@@ -119,6 +120,9 @@ int main(int argc, char *argv[]) {
     std::vector<float> queries;
 
     { // populating the database
+        // #include <iostream>
+
+        printf("====================Vectors====================\n");
         printf("[%.3f s] Building a dataset of %ld vectors to index\n",
                elapsed() - t0,
                nb);
@@ -127,6 +131,12 @@ int main(int argc, char *argv[]) {
         std::uniform_real_distribution<> distrib;
         for (size_t i = 0; i < nb * d; i++) {
             database[i] = distrib(rng);
+        }
+
+        for (size_t i = 0; i < nb * d; i = i + d) {
+            // printf("vector %ld: (%f, %f)\n", i, database[i], database[i + 1]);
+            printf("vector %ld: (%f)\n", i, database[i]);
+
         }
 
         printf("[%.3f s] Adding the vectors to the index\n", elapsed() - t0);
@@ -152,6 +162,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+
 
     // // generate metadata
     // std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};

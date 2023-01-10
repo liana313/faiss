@@ -1,8 +1,58 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/faiss-private/build
+make: Entering directory '/home/ubuntu/faiss-private/build'
+make[1]: Entering directory '/home/ubuntu/faiss-private/build'
+make[2]: Entering directory '/home/ubuntu/faiss-private/build'
+make[3]: Entering directory '/home/ubuntu/faiss-private/build'
+Consolidate compiler generated dependencies of target faiss
+make[3]: Leaving directory '/home/ubuntu/faiss-private/build'
+[100%] Built target faiss
+make[2]: Leaving directory '/home/ubuntu/faiss-private/build'
+make[1]: Leaving directory '/home/ubuntu/faiss-private/build'
+make: Leaving directory '/home/ubuntu/faiss-private/build'
+make: Entering directory '/home/ubuntu/faiss-private/build'
+make[1]: Entering directory '/home/ubuntu/faiss-private/build'
+make[2]: Entering directory '/home/ubuntu/faiss-private/build'
+make[3]: Entering directory '/home/ubuntu/faiss-private/build'
+make[3]: Leaving directory '/home/ubuntu/faiss-private/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss-private/build'
+Consolidate compiler generated dependencies of target demo_test_search
+make[3]: Leaving directory '/home/ubuntu/faiss-private/build'
+[100%] Built target demo_test_search
+make[2]: Leaving directory '/home/ubuntu/faiss-private/build'
+make[1]: Leaving directory '/home/ubuntu/faiss-private/build'
+make: Leaving directory '/home/ubuntu/faiss-private/build'
+make: Entering directory '/home/ubuntu/faiss-private/build'
+make[1]: Entering directory '/home/ubuntu/faiss-private/build'
+make[2]: Entering directory '/home/ubuntu/faiss-private/build'
+make[3]: Entering directory '/home/ubuntu/faiss-private/build'
+make[3]: Leaving directory '/home/ubuntu/faiss-private/build'
+[ 97%] Built target faiss
+make[3]: Entering directory '/home/ubuntu/faiss-private/build'
+Consolidate compiler generated dependencies of target demo_test_search_small
+make[3]: Leaving directory '/home/ubuntu/faiss-private/build'
+[100%] Built target demo_test_search_small
+make[2]: Leaving directory '/home/ubuntu/faiss-private/build'
+make[1]: Leaving directory '/home/ubuntu/faiss-private/build'
+make: Leaving directory '/home/ubuntu/faiss-private/build'
 ====================
 START: running tests for hnsw...
-[0.000 s] Index Params -- d: 128, M: 3, nb: 10, gamma: 1
+[0.000 s] Index Params -- d: 1, M: 3, nb: 10, gamma: 1
 --HNSW index created
+====================Vectors====================
 [0.000 s] Building a dataset of 10 vectors to index
+vector 0: (0.135477)
+vector 1: (0.835009)
+vector 2: (0.968868)
+vector 3: (0.221034)
+vector 4: (0.308167)
+vector 5: (0.547221)
+vector 6: (0.188382)
+vector 7: (0.992881)
+vector 8: (0.996461)
+vector 9: (0.967695)
 [0.000 s] Adding the vectors to the index
 [0.001 s] Vectors added
 ========= METADATA =======
@@ -54,9 +104,9 @@ START: running tests for hnsw...
 ========= LEVEL 0 =======
 * stats on level 0, max 6 neighbors per vertex:
    1. nb of nodes: 10
-   2. neighbors per node: 4.50 (45)
-   3. nb of reciprocal neighbors: 3.60
-   4. nb of neighbors that are also neighbor-of-neighbors: 4.00 (40)
+   2. neighbors per node: 3.40 (34)
+   3. nb of reciprocal neighbors: 2.20
+   4. nb of neighbors that are also neighbor-of-neighbors: 2.90 (29)
 ========= LEVEL 1 =======
 * stats on level 1, max 3 neighbors per vertex:
    1. nb of nodes: 3
@@ -69,14 +119,14 @@ START: running tests for hnsw...
    2. neighbors per node: 1.00 (2)
    3. nb of reciprocal neighbors: 1.00
    4. nb of neighbors that are also neighbor-of-neighbors: 0.00 (0)
-[0.001 s] storing the hnsw index to ./tmp/index_hnsw_N=10.faissindex
-====Size of the file is 5922 bytes
+[0.005 s] storing the hnsw index to ./tmp/index_hnsw_N=10.faissindex
+====Size of the file is 842 bytes
 ====================Search====================
-[0.001 s] Searching the 10 nearest neighbors of 2 vectors in the index
-[0.004 s] Query results (vector ids, then distances):
-query  0 nn's:       3       1       6       8       2      -1      -1      -1      -1      -1 
-     dis: 	      0 20.7193 21.0238 21.1164 21.4809 3.40282e+38 3.40282e+38 3.40282e+38 3.40282e+38 3.40282e+38 
-query  1 nn's:       4       9       2       1       7       0       8       3       5       6 
-     dis: 	      0 19.5621 20.8304  23.381 23.7431 24.1879 24.3934 24.8915 25.1093 27.6873 
-[0.004 s] *** Query time: 0.002887
+[0.005 s] Searching the 10 nearest neighbors of 2 vectors in the index
+[0.009 s] Query results (vector ids, then distances):
+query  0 nn's:       3       6       0       4       5       1      -1      -1      -1      -1 
+     dis: 	      0 0.00106616 0.00732001 0.00759216 0.106398 0.376965 3.40282e+38 3.40282e+38 3.40282e+38 3.40282e+38 
+query  1 nn's:       4       3       6       0       5       1      -1      -1      -1      -1 
+     dis: 	      0 0.00759216 0.0143485 0.0298218 0.0571466 0.277562 3.40282e+38 3.40282e+38 3.40282e+38 3.40282e+38 
+[0.009 s] *** Query time: 0.003720
 -----DONE-----

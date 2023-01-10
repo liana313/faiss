@@ -17,6 +17,11 @@
 
 namespace faiss {
 
+// TODO - REMOVE THESE HARDCODE VALUES FOR HYBRID SEARCH
+// attribute array
+// filter for search
+
+
 /**************************************************************
  * HNSW structure implementation
  **************************************************************/
@@ -50,7 +55,7 @@ void HNSW::neighbor_range(idx_t no, int layer_no, size_t* begin, size_t* end)
 //     max_level = -1;
 //     entry_point = -1;
 //     efSearch = 16;
-//     efConstruction = 40 * 10; //TODO edit
+//     efConstruction = 40 * 10;
 //     upper_beam = 1;
 //     gamma = 1;
 //     offsets.push_back(0);
@@ -61,7 +66,7 @@ HNSW::HNSW(int M, int gamma) : rng(12345) {
     max_level = -1;
     entry_point = -1;
     efSearch = 16;
-    efConstruction = 40 * gamma; //TODO edit
+    efConstruction = 40 * gamma; //added gamma
     upper_beam = 1;
     this->gamma = gamma;
     // gamma = gamma;
@@ -91,7 +96,7 @@ void HNSW::set_default_probas(int M, float levelMult, int gamma) {
         if (proba < 1e-9)
             break;
         assign_probas.push_back(proba);
-        nn += level == 0 ? M * 2 * gamma: M * gamma; // TODO - edit here
+        nn += level == 0 ? M * 2 * gamma: M * gamma; // added gamma
         cum_nneighbor_per_level.push_back(nn);
     }
 }
@@ -431,6 +436,7 @@ void search_neighbors_to_add(
  **************************************************************/
 
 /// greedily update a nearest vector at a given level
+/// node construction uses this also
 void greedy_update_nearest(
         const HNSW& hnsw,
         DistanceComputer& qdis,
@@ -446,6 +452,7 @@ void greedy_update_nearest(
             storage_idx_t v = hnsw.neighbors[i];
             if (v < 0)
                 break;
+            // TODO: create a search function that skips i if it has the wrong attribute
             float dis = qdis(v);
             if (dis < d_nearest) {
                 nearest = v;
@@ -556,7 +563,7 @@ namespace {
 using MinimaxHeap = HNSW::MinimaxHeap;
 using Node = HNSW::Node;
 /** Do a BFS on the candidates list */
-
+// this is called in search and search_from_level_0
 int search_from_candidates(
         const HNSW& hnsw,
         DistanceComputer& qdis,
@@ -594,7 +601,7 @@ int search_from_candidates(
 
     int nstep = 0;
 
-    while (candidates.size() > 0) {
+    while (candidates.size() > 0) { // candidates is heap of size max(efs, k)
         float d0 = 0;
         int v0 = candidates.pop_min(&d0);
 
@@ -619,6 +626,9 @@ int search_from_candidates(
             if (vt.get(v1)) {
                 continue;
             }
+            // TODO - add check for if attr of v1 passes filter
+            // possible problem if none of them pass, you would then want
+            // the closest of all the ones that did pass, for now just return err
             vt.set(v1);
             ndis++;
             float d = qdis(v1);
@@ -632,7 +642,7 @@ int search_from_candidates(
             candidates.push(v1, d);
         }
 
-        nstep++;
+        nstep++; // TODO - might want to onlu increment this if we find a neighbor that passes attr
         if (!do_dis_check && nstep > efSearch) {
             break;
         }
