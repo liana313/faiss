@@ -15,11 +15,62 @@
 #include <faiss/impl/DistanceComputer.h>
 #include <faiss/impl/IDSelector.h>
 
+// added
+#include <sys/time.h>
+#include <stdio.h>
+#include <iostream>
+
 namespace faiss {
 
+/*******************************************************
+ * Added for debugging
+ *******************************************************/
+
+
+const int debugFlag = 2;
+
+void debugTime() {
+	if (debugFlag) {
+        struct timeval tval;
+        gettimeofday(&tval, NULL);
+        struct tm *tm_info = localtime(&tval.tv_sec);
+        char timeBuff[25] = "";
+        strftime(timeBuff, 25, "%H:%M:%S", tm_info);
+        char timeBuffWithMilli[50] = "";
+        sprintf(timeBuffWithMilli, "%s.%06ld ", timeBuff, tval.tv_usec);
+        std::string timestamp(timeBuffWithMilli);
+		std::cout << timestamp << std::flush;
+    }
+}
+
+//needs atleast 2 args always
+//  alt debugFlag = 1 // fprintf(stderr, fmt, __VA_ARGS__); 
+#define debug(fmt, ...) \
+    do { \
+        if (debugFlag == 1) { \
+            fprintf(stdout, "--" fmt, __VA_ARGS__);\
+        } \
+        if (debugFlag == 2) { \
+            debugTime(); \
+            fprintf(stdout, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__); \
+        } \
+    } while (0)
+
+
+
+double elapsed() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + tv.tv_usec * 1e-6;
+}
+
+
+
+
 // TODO - REMOVE THESE HARDCODE VALUES FOR HYBRID SEARCH
-// attribute array
-// filter for search
+// attribute array & query filter, note entrypoint is 1 (attr=1)
+std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+int filter = 1;
 
 
 /**************************************************************
@@ -443,6 +494,37 @@ void greedy_update_nearest(
         int level,
         storage_idx_t& nearest,
         float& d_nearest) {
+    debug("%s\n", "reached");
+    for (;;) {
+        storage_idx_t prev_nearest = nearest;
+
+        size_t begin, end;
+        hnsw.neighbor_range(nearest, level, &begin, &end);
+        for (size_t i = begin; i < end; i++) {
+            storage_idx_t v = hnsw.neighbors[i];
+            if (v < 0)
+                break;
+            // TODO: create a search function that skips i if it has the wrong attribute
+            float dis = qdis(v);
+            if (dis < d_nearest) {
+                nearest = v;
+                d_nearest = dis;
+            }
+        }
+        if (nearest == prev_nearest) {
+            return;
+        }
+    }
+}
+
+/// for hybrid search TODO
+void hybrid_greedy_update_nearest(
+        const HNSW& hnsw,
+        DistanceComputer& qdis,
+        int level,
+        storage_idx_t& nearest,
+        float& d_nearest) {
+    debug("%s\n", "reached");
     for (;;) {
         storage_idx_t prev_nearest = nearest;
 
@@ -576,6 +658,7 @@ int search_from_candidates(
         int level,
         int nres_in = 0,
         const SearchParametersHNSW* params = nullptr) {
+    debug("%s\n", "reached");
     int nres = nres_in;
     int ndis = 0;
 
@@ -642,7 +725,104 @@ int search_from_candidates(
             candidates.push(v1, d);
         }
 
-        nstep++; // TODO - might want to onlu increment this if we find a neighbor that passes attr
+        nstep++; // TODO - might want to only increment this if we find a neighbor that passes attr
+        if (!do_dis_check && nstep > efSearch) {
+            break;
+        }
+    }
+
+    if (level == 0) {
+        stats.n1++;
+        if (candidates.size() == 0) {
+            stats.n2++;
+        }
+        stats.n3 += ndis;
+    }
+
+    return nres;
+}
+
+// for hybrid search TODO
+int hybrid_search_from_candidates(
+        const HNSW& hnsw,
+        DistanceComputer& qdis,
+        int k,
+        idx_t* I,
+        float* D,
+        MinimaxHeap& candidates,
+        VisitedTable& vt,
+        HNSWStats& stats,
+        int level,
+        int nres_in = 0,
+        const SearchParametersHNSW* params = nullptr) {
+    debug("%s\n", "reached");
+    int nres = nres_in;
+    int ndis = 0;
+
+    // can be overridden by search params
+    bool do_dis_check = params ? params->check_relative_distance
+                               : hnsw.check_relative_distance;
+    int efSearch = params ? params->efSearch : hnsw.efSearch;
+    const IDSelector* sel = params ? params->sel : nullptr;
+
+    for (int i = 0; i < candidates.size(); i++) {
+        idx_t v1 = candidates.ids[i];
+        float d = candidates.dis[i];
+        FAISS_ASSERT(v1 >= 0);
+        if (!sel || sel->is_member(v1)) {
+            if (nres < k) {
+                faiss::maxheap_push(++nres, D, I, d, v1);
+            } else if (d < D[0]) {
+                faiss::maxheap_replace_top(nres, D, I, d, v1);
+            }
+        }
+        vt.set(v1);
+    }
+
+    int nstep = 0;
+
+    while (candidates.size() > 0) { // candidates is heap of size max(efs, k)
+        float d0 = 0;
+        int v0 = candidates.pop_min(&d0);
+
+        if (do_dis_check) {
+            // tricky stopping condition: there are more that ef
+            // distances that are processed already that are smaller
+            // than d0
+
+            int n_dis_below = candidates.count_below(d0);
+            if (n_dis_below >= efSearch) {
+                break;
+            }
+        }
+
+        size_t begin, end;
+        hnsw.neighbor_range(v0, level, &begin, &end);
+
+        for (size_t j = begin; j < end; j++) {
+            int v1 = hnsw.neighbors[j];
+            if (v1 < 0)
+                break;
+            if (vt.get(v1)) {
+                continue;
+            }
+            // TODO - add check for if attr of v1 passes filter
+            // possible problem if none of them pass, you would then want
+            // the closest of all the ones that did pass, for now just return err
+            vt.set(v1);
+            ndis++;
+            float d = qdis(v1);
+            if (!sel || sel->is_member(v1)) {
+                if (nres < k) {
+                    faiss::maxheap_push(++nres, D, I, d, v1);
+                } else if (d < D[0]) {
+                    faiss::maxheap_replace_top(nres, D, I, d, v1);
+                }
+            }
+            candidates.push(v1, d);
+        }
+
+        nstep++; // TODO - might want to only increment this if we find a neighbor that passes attr
         if (!do_dis_check && nstep > efSearch) {
             break;
         }
@@ -666,6 +846,7 @@ std::priority_queue<HNSW::Node> search_from_candidate_unbounded(
         int ef,
         VisitedTable* vt,
         HNSWStats& stats) {
+     debug("%s\n", "reached");
     int ndis = 0;
     std::priority_queue<Node> top_candidates;
     std::priority_queue<Node, std::vector<Node>, std::greater<Node>> candidates;
@@ -733,11 +914,14 @@ HNSWStats HNSW::search(
         float* D,
         VisitedTable& vt,
         const SearchParametersHNSW* params) const {
+    debug("%s\n", "reached");
     HNSWStats stats;
     if (entry_point == -1) {
         return stats;
     }
-    if (upper_beam == 1) {
+    if (upper_beam == 1) { // common branch
+        debug("%s\n", "reached upper beam == 1");
+
         //  greedy search on upper levels
         storage_idx_t nearest = entry_point;
         float d_nearest = qdis(nearest);
@@ -748,6 +932,8 @@ HNSWStats HNSW::search(
 
         int ef = std::max(efSearch, k);
         if (search_bounded_queue) { // this is the most common branch
+            debug("%s\n", "reached search bounded queue");
+
             MinimaxHeap candidates(ef);
 
             candidates.push(nearest, d_nearest);
@@ -755,6 +941,8 @@ HNSWStats HNSW::search(
             search_from_candidates(
                     *this, qdis, k, I, D, candidates, vt, stats, 0, 0, params);
         } else {
+            debug("%s\n", "reached search_bounded_queue == False");
+
             std::priority_queue<Node> top_candidates =
                     search_from_candidate_unbounded(
                             *this,
@@ -781,6 +969,8 @@ HNSWStats HNSW::search(
         vt.advance();
 
     } else {
+        debug("%s\n", "reached upper beam != 1");
+
         int candidates_size = upper_beam;
         MinimaxHeap candidates(candidates_size);
 
@@ -822,6 +1012,114 @@ HNSWStats HNSW::search(
     return stats;
 }
 
+// hybrid search TODO
+HNSWStats HNSW::hybrid_search(
+        DistanceComputer& qdis,
+        int k,
+        idx_t* I,
+        float* D,
+        VisitedTable& vt,
+        const SearchParametersHNSW* params) const {
+    debug("%s\n", "reached");
+    HNSWStats stats;
+    if (entry_point == -1) {
+        return stats;
+    }
+    if (upper_beam == 1) { // common branch
+        debug("%s\n", "reached upper beam == 1");
+
+        //  greedy search on upper levels
+        storage_idx_t nearest = entry_point;
+        float d_nearest = qdis(nearest);
+
+        for (int level = max_level; level >= 1; level--) {
+            hybrid_greedy_update_nearest(*this, qdis, level, nearest, d_nearest);
+        }
+
+        int ef = std::max(efSearch, k);
+        if (search_bounded_queue) { // this is the most common branch
+            debug("%s\n", "reached search bounded queue");
+
+            MinimaxHeap candidates(ef);
+
+            candidates.push(nearest, d_nearest);
+
+            hybrid_search_from_candidates(
+                    *this, qdis, k, I, D, candidates, vt, stats, 0, 0, params);
+        } else {
+            // TODO
+            printf("UNIMPLEMENTED BRANCH for hybid search\n");
+            debug("%s\n", "reached search_bounded_queue == False");
+
+            std::priority_queue<Node> top_candidates =
+                    search_from_candidate_unbounded(
+                            *this,
+                            Node(d_nearest, nearest),
+                            qdis,
+                            ef,
+                            &vt,
+                            stats);
+
+            while (top_candidates.size() > k) {
+                top_candidates.pop();
+            }
+
+            int nres = 0;
+            while (!top_candidates.empty()) {
+                float d;
+                storage_idx_t label;
+                std::tie(d, label) = top_candidates.top();
+                faiss::maxheap_push(++nres, D, I, d, label);
+                top_candidates.pop();
+            }
+        }
+
+        vt.advance();
+
+    } else {
+        debug("%s\n", "reached upper beam != 1");
+
+        int candidates_size = upper_beam;
+        MinimaxHeap candidates(candidates_size);
+
+        std::vector<idx_t> I_to_next(candidates_size);
+        std::vector<float> D_to_next(candidates_size);
+
+        int nres = 1;
+        I_to_next[0] = entry_point;
+        D_to_next[0] = qdis(entry_point);
+
+        for (int level = max_level; level >= 0; level--) {
+            // copy I, D -> candidates
+
+            candidates.clear();
+
+            for (int i = 0; i < nres; i++) {
+                candidates.push(I_to_next[i], D_to_next[i]);
+            }
+
+            if (level == 0) {
+                nres = hybrid_search_from_candidates(
+                        *this, qdis, k, I, D, candidates, vt, stats, 0);
+            } else {
+                nres = hybrid_search_from_candidates(
+                        *this,
+                        qdis,
+                        candidates_size,
+                        I_to_next.data(),
+                        D_to_next.data(),
+                        candidates,
+                        vt,
+                        stats,
+                        level);
+            }
+            vt.advance();
+        }
+    }
+
+    return stats;
+}
+
 void HNSW::search_level_0(
         DistanceComputer& qdis,
         int k,
@@ -833,6 +1131,8 @@ void HNSW::search_level_0(
         int search_type,
         HNSWStats& search_stats,
         VisitedTable& vt) const {
+    debug("%s\n", "reached");
+
     const HNSW& hnsw = *this;
 
     if (search_type == 1) {

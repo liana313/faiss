@@ -217,6 +217,21 @@ struct HNSW {
             int search_type,
             HNSWStats& search_stats,
             VisitedTable& vt) const;
+    
+    /**************************************************************
+    * HYBRID INDEX
+    **************************************************************/
+    /// search interface for 1 point, single thread
+    HNSWStats hybrid_search(
+            DistanceComputer& qdis,
+            int k,
+            idx_t* I,
+            float* D,
+            VisitedTable& vt,
+            const SearchParametersHNSW* params = nullptr) const;
+
+    /**************************************************************
+    **************************************************************/
 
     void reset();
 

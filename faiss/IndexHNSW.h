@@ -188,4 +188,23 @@ struct IndexHNSW2Level : IndexHNSW {
             const SearchParameters* params = nullptr) const override;
 };
 
+
+/**************************************************************
+ * HYBRID INDEX
+ **************************************************************/
+/** Inherits from IndexHNSWFlat
+ */
+struct IndexHNSWHybrid : IndexHNSWFlat {
+    IndexHNSWHybrid();
+    IndexHNSWHybrid(int d, int M, int gamma = 1, MetricType metric = METRIC_L2);
+
+    void search(
+            idx_t n,
+            const float* x,
+            idx_t k,
+            float* distances,
+            idx_t* labels,
+            const SearchParameters* params = nullptr) const override;
+};
+
 } // namespace faiss

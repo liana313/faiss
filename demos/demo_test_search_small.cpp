@@ -27,7 +27,6 @@
 
 
 
-
 /*******************************************************
  * Added for debugging
  *******************************************************/
@@ -74,7 +73,7 @@ double elapsed() {
 
 //  args are nb, M, gamma
 int main(int argc, char *argv[]) {
-    printf("====================\nSTART: running tests for hnsw...\n");
+    printf("====================\nSTART: running demo_test_search_small for hnsw...\n");
     double t0 = elapsed();
     int opt;
     // int d = 128; // dimension of the vectors to index
@@ -114,7 +113,7 @@ int main(int argc, char *argv[]) {
     index.hnsw.efSearch = efs; // default is 16 *gamma in HNSW.capp
     debug("HNSW index created%s\n", "");
     
-    std::mt19937 rng; // random generator to be used for creating vectors
+    std::mt19937 rng(0); // random generator to be used for creating vectors, set seed
 
     size_t nq; // num queries
     std::vector<float> queries;
