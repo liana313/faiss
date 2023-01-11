@@ -504,7 +504,6 @@ void greedy_update_nearest(
             storage_idx_t v = hnsw.neighbors[i];
             if (v < 0)
                 break;
-            // TODO: create a search function that skips i if it has the wrong attribute
             float dis = qdis(v);
             if (dis < d_nearest) {
                 nearest = v;
@@ -534,7 +533,12 @@ void hybrid_greedy_update_nearest(
             storage_idx_t v = hnsw.neighbors[i];
             if (v < 0)
                 break;
-            // TODO: create a search function that skips i if it has the wrong attribute
+            // TODO check - skips vertex if it has the wrong attribute
+            debug("looking at vertex %d with metadata %d\n", v, metadata[v]);
+            if (metadata[v] != filter) {
+                debug("%s\n", "skipping vertex");
+                continue;
+            }
             float dis = qdis(v);
             if (dis < d_nearest) {
                 nearest = v;
@@ -709,9 +713,6 @@ int search_from_candidates(
             if (vt.get(v1)) {
                 continue;
             }
-            // TODO - add check for if attr of v1 passes filter
-            // possible problem if none of them pass, you would then want
-            // the closest of all the ones that did pass, for now just return err
             vt.set(v1);
             ndis++;
             float d = qdis(v1);
@@ -725,7 +726,7 @@ int search_from_candidates(
             candidates.push(v1, d);
         }
 
-        nstep++; // TODO - might want to only increment this if we find a neighbor that passes attr
+        nstep++;
         if (!do_dis_check && nstep > efSearch) {
             break;
         }
@@ -809,6 +810,12 @@ int hybrid_search_from_candidates(
             // TODO - add check for if attr of v1 passes filter
             // possible problem if none of them pass, you would then want
             // the closest of all the ones that did pass, for now just return err
+            // skips vertex if it has the wrong attribute
+            debug("looking at vertex %d with metadata %d\n", v1, metadata[v1]);
+            if (metadata[v1] != filter) {
+                debug("%s\n", "skipping vertex");
+                continue;
+            }
             vt.set(v1);
             ndis++;
             float d = qdis(v1);
