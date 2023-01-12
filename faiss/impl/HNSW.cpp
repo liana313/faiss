@@ -67,10 +67,10 @@ double elapsed() {
 
 
 
-// TODO - REMOVE THESE HARDCODE VALUES FOR HYBRID SEARCH
-// attribute array & query filter, note entrypoint is 1 (attr=1)
-std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
-int filter = 1;
+// // TODO - REMOVE THESE HARDCODE VALUES FOR HYBRID SEARCH
+// // attribute array & query filter, note entrypoint is 1 (attr=1)
+// std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+// int filter = 1;
 
 
 /**************************************************************
@@ -232,6 +232,72 @@ void HNSW::print_neighbor_stats(int level) const {
            tot_common);
 }
 
+// same as print_neighbor_stats with additional edge lists printed, no parallelism
+void HNSW::print_edges(int level) const {
+    FAISS_THROW_IF_NOT(level < cum_nneighbor_per_level.size());
+    printf("* stats on level %d, max %d neighbors per vertex:\n",
+           level,
+           nb_neighbors(level));
+
+    size_t tot_neigh = 0, tot_common = 0, tot_reciprocal = 0, n_node = 0;
+    printf("\t edges lists:\n");
+//#pragma omp parallel for reduction(+: tot_neigh) reduction(+: tot_common) \
+  reduction(+: tot_reciprocal) reduction(+: n_node)
+    for (int i = 0; i < levels.size(); i++) {
+        if (levels[i] > level) {
+            n_node++;
+            size_t begin, end;
+            neighbor_range(i, level, &begin, &end);
+            std::unordered_set<int> neighset;
+            printf("\t\t node %d: ", i);
+            for (size_t j = begin; j < end; j++) {
+                if (neighbors[j] < 0)
+                    break;
+                printf("%d ", neighbors[j]);
+                neighset.insert(neighbors[j]);
+            }
+            printf("\n");
+            int n_neigh = neighset.size();
+            int n_common = 0;
+            int n_reciprocal = 0;
+            for (size_t j = begin; j < end; j++) {
+                storage_idx_t i2 = neighbors[j];
+                if (i2 < 0)
+                    break;
+                FAISS_ASSERT(i2 != i);
+                size_t begin2, end2;
+                neighbor_range(i2, level, &begin2, &end2);
+                for (size_t j2 = begin2; j2 < end2; j2++) {
+                    storage_idx_t i3 = neighbors[j2];
+                    if (i3 < 0)
+                        break;
+                    if (i3 == i) {
+                        n_reciprocal++;
+                        continue;
+                    }
+                    if (neighset.count(i3)) {
+                        neighset.erase(i3);
+                        n_common++;
+                    }
+                }
+            }
+            tot_neigh += n_neigh;
+            tot_common += n_common;
+            tot_reciprocal += n_reciprocal;
+        }
+    }
+    float normalizer = n_node;
+    printf("   1. nb of nodes: %zd\n", n_node);
+    printf("   2. neighbors per node: %.2f (%zd)\n",
+           tot_neigh / normalizer,
+           tot_neigh);
+    printf("   3. nb of reciprocal neighbors: %.2f\n",
+           tot_reciprocal / normalizer);
+    printf("   4. nb of neighbors that are also neighbor-of-neighbors: %.2f (%zd)\n",
+           tot_common / normalizer,
+           tot_common);
+}
+
 // stats for all levels 
 void HNSW::print_neighbor_stats() const {
     printf("========= METADATA =======\n");
@@ -254,7 +320,8 @@ void HNSW::print_neighbor_stats() const {
     // per level stats
     for (int level = 0; level <= max_level; level++) {
         printf("========= LEVEL %d =======\n", level);
-        print_neighbor_stats(level);
+        print_edges(level);
+        // print_neighbor_stats(level);
     }
 }
 
@@ -520,6 +587,7 @@ void greedy_update_nearest(
 void hybrid_greedy_update_nearest(
         const HNSW& hnsw,
         DistanceComputer& qdis,
+        int filter,
         int level,
         storage_idx_t& nearest,
         float& d_nearest) {
@@ -534,8 +602,8 @@ void hybrid_greedy_update_nearest(
             if (v < 0)
                 break;
             // TODO check - skips vertex if it has the wrong attribute
-            debug("looking at vertex %d with metadata %d\n", v, metadata[v]);
-            if (metadata[v] != filter) {
+            debug("looking at vertex %d with metadata %d\n", v, hnsw.metadata[v]);
+            if (hnsw.metadata[v] != filter) {
                 debug("%s\n", "skipping vertex");
                 continue;
             }
@@ -747,6 +815,7 @@ int search_from_candidates(
 int hybrid_search_from_candidates(
         const HNSW& hnsw,
         DistanceComputer& qdis,
+        int filter,
         int k,
         idx_t* I,
         float* D,
@@ -786,13 +855,14 @@ int hybrid_search_from_candidates(
         float d0 = 0;
         int v0 = candidates.pop_min(&d0);
 
+        // TODO - this may cause stopping before all neighbors are found
         if (do_dis_check) {
             // tricky stopping condition: there are more that ef
             // distances that are processed already that are smaller
             // than d0
-
             int n_dis_below = candidates.count_below(d0);
             if (n_dis_below >= efSearch) {
+                debug("%s\n", "n_dis_below >= efSearch BREAK cond reached");
                 break;
             }
         }
@@ -811,8 +881,8 @@ int hybrid_search_from_candidates(
             // possible problem if none of them pass, you would then want
             // the closest of all the ones that did pass, for now just return err
             // skips vertex if it has the wrong attribute
-            debug("looking at vertex %d with metadata %d\n", v1, metadata[v1]);
-            if (metadata[v1] != filter) {
+            debug("looking at vertex %d with metadata %d\n", v1, hnsw.metadata[v1]);
+            if (hnsw.metadata[v1] != filter) {
                 debug("%s\n", "skipping vertex");
                 continue;
             }
@@ -828,9 +898,11 @@ int hybrid_search_from_candidates(
             }
             candidates.push(v1, d);
         }
-
+        
         nstep++; // TODO - might want to only increment this if we find a neighbor that passes attr
+        debug("nstep incr'd to %d\n", nstep);
         if (!do_dis_check && nstep > efSearch) {
+            debug("BREAK cond reached - nstep=%d > efsSearch\n", nstep);
             break;
         }
     }
@@ -1026,6 +1098,7 @@ HNSWStats HNSW::hybrid_search(
         idx_t* I,
         float* D,
         VisitedTable& vt,
+        int filter,
         const SearchParametersHNSW* params) const {
     debug("%s\n", "reached");
     HNSWStats stats;
@@ -1040,7 +1113,7 @@ HNSWStats HNSW::hybrid_search(
         float d_nearest = qdis(nearest);
 
         for (int level = max_level; level >= 1; level--) {
-            hybrid_greedy_update_nearest(*this, qdis, level, nearest, d_nearest);
+            hybrid_greedy_update_nearest(*this, qdis, filter, level, nearest, d_nearest);
         }
 
         int ef = std::max(efSearch, k);
@@ -1052,7 +1125,7 @@ HNSWStats HNSW::hybrid_search(
             candidates.push(nearest, d_nearest);
 
             hybrid_search_from_candidates(
-                    *this, qdis, k, I, D, candidates, vt, stats, 0, 0, params);
+                    *this, qdis, filter, k, I, D, candidates, vt, stats, 0, 0, params);
         } else {
             // TODO
             printf("UNIMPLEMENTED BRANCH for hybid search\n");
@@ -1107,11 +1180,12 @@ HNSWStats HNSW::hybrid_search(
 
             if (level == 0) {
                 nres = hybrid_search_from_candidates(
-                        *this, qdis, k, I, D, candidates, vt, stats, 0);
+                        *this, qdis, filter, k, I, D, candidates, vt, stats, 0);
             } else {
                 nres = hybrid_search_from_candidates(
                         *this,
                         qdis,
+                        filter,
                         candidates_size,
                         I_to_next.data(),
                         D_to_next.data(),

@@ -80,9 +80,9 @@ int main(int argc, char *argv[]) {
     int d = 1; // dimension of the vectors to index
     size_t nb = 10;
     int M = 3;
-    int gamma = 1;
+    int gamma = 2;
     int efc = 4;
-    int efs = 2;
+    int efs = 2; // efs=3 find 9
     int k = 10; // search parameter
     // int d = 128; // dimension of the vectors to index
     // int M = 32 * 1000; // HSNW param M
@@ -105,10 +105,18 @@ int main(int argc, char *argv[]) {
     //     gamma = atoi(argv[3]);
     //     debug("gamma: %d\n", gamma);
     // }
+
+    // // generate metadata
+    // std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+    // printf("[%.3f s] Set metadata, %ld attr's generated\n", 
+    //     elapsed() - t0, metadata.size());
+    // assert(nb == metadata.size());
+
     
     printf("[%.3f s] Index Params -- d: %d, M: %d, nb: %ld, gamma: %d\n",
                elapsed() - t0, d, M, nb, gamma);
-    faiss::IndexHNSWHybrid index(d, M, gamma);
+    std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+    faiss::IndexHNSWHybrid index(d, M, gamma, metadata);
     index.hnsw.efConstruction = efc; // default is 40 *gamma in HNSW.capp
     index.hnsw.efSearch = efs; // default is 16 *gamma in HNSW.capp
     debug("HNSW index created%s\n", "");
@@ -163,12 +171,7 @@ int main(int argc, char *argv[]) {
     }
 
 
-    // // generate metadata
-    // std::vector<int> metadata{0, 1, 0, 1, 0, 1, 0, 1, 0, 1};
-    // printf("[%.3f s] Set metadata, %ld attr's generated\n", 
-    //     elapsed() - t0, metadata.size());
-    // assert(nb == metadata.size());
-
+    
     
 
     { // print out stats
@@ -212,7 +215,8 @@ int main(int argc, char *argv[]) {
         std::vector<float> dis(k * nq);
 
         double t1 = elapsed();
-        index.search(nq, queries.data(), k, dis.data(), nns.data());
+        int filter = 1;
+        index.search(nq, queries.data(), k, dis.data(), nns.data(), filter);
         double t2 = elapsed();
 
         printf("[%.3f s] Query results (vector ids, then distances):\n",
@@ -221,7 +225,7 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < nq; i++) {
             printf("query %2d nn's: ", i);
             for (int j = 0; j < k; j++) {
-                printf("%7ld ", nns[j + i * k]);
+                printf("%7ld (%d) ", nns[j + i * k], metadata[nns[j + i * k]]);
             }
             printf("\n     dis: \t");
             for (int j = 0; j < k; j++) {

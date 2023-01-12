@@ -194,17 +194,20 @@ struct IndexHNSW2Level : IndexHNSW {
  **************************************************************/
 /** Inherits from IndexHNSWFlat
  */
+// TODO - change metadata from int* to generic type
 struct IndexHNSWHybrid : IndexHNSWFlat {
     IndexHNSWHybrid();
-    IndexHNSWHybrid(int d, int M, int gamma = 1, MetricType metric = METRIC_L2);
+    IndexHNSWHybrid(int d, int M, int gamma, std::vector<int>& metadata, MetricType metric = METRIC_L2);
 
+    // this doesn't override normal search since definition has a filter param - search is overloaded
     void search(
             idx_t n,
             const float* x,
             idx_t k,
             float* distances,
             idx_t* labels,
-            const SearchParameters* params = nullptr) const override;
+            int filter,
+            const SearchParameters* params = nullptr) const;
 };
 
 } // namespace faiss

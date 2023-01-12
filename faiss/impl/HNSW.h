@@ -222,12 +222,15 @@ struct HNSW {
     * HYBRID INDEX
     **************************************************************/
     /// search interface for 1 point, single thread
+    int* metadata;
+    
     HNSWStats hybrid_search(
             DistanceComputer& qdis,
             int k,
             idx_t* I,
             float* D,
             VisitedTable& vt,
+            int filter,
             const SearchParametersHNSW* params = nullptr) const;
 
     /**************************************************************
@@ -237,6 +240,7 @@ struct HNSW {
 
     void clear_neighbor_tables(int level);
     void print_neighbor_stats(int level) const;
+    void print_edges(int level) const;
     void print_neighbor_stats() const;
 
     int prepare_level_tab(size_t n, bool preset_levels = false);

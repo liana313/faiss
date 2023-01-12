@@ -35,7 +35,54 @@
 #include <faiss/utils/sorting.h>
 
 // # added
+#include <sys/time.h>
+#include <stdio.h>
 #include <iostream>
+
+/*******************************************************
+ * Added for debugging
+ *******************************************************/
+
+
+const int debugFlag = 2;
+
+void debugTime() {
+	if (debugFlag) {
+        struct timeval tval;
+        gettimeofday(&tval, NULL);
+        struct tm *tm_info = localtime(&tval.tv_sec);
+        char timeBuff[25] = "";
+        strftime(timeBuff, 25, "%H:%M:%S", tm_info);
+        char timeBuffWithMilli[50] = "";
+        sprintf(timeBuffWithMilli, "%s.%06ld ", timeBuff, tval.tv_usec);
+        std::string timestamp(timeBuffWithMilli);
+		std::cout << timestamp << std::flush;
+    }
+}
+
+//needs atleast 2 args always
+//  alt debugFlag = 1 // fprintf(stderr, fmt, __VA_ARGS__); 
+#define debug(fmt, ...) \
+    do { \
+        if (debugFlag == 1) { \
+            fprintf(stdout, "--" fmt, __VA_ARGS__);\
+        } \
+        if (debugFlag == 2) { \
+            debugTime(); \
+            fprintf(stdout, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __func__, __VA_ARGS__); \
+        } \
+    } while (0)
+
+
+
+double elapsed() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec + tv.tv_usec * 1e-6;
+}
+
+
+
 
 extern "C" {
 
@@ -1150,10 +1197,17 @@ IndexHNSWHybrid::IndexHNSWHybrid() {
 }
 
 // hybrid HNSW only implemented using Flat storage
-IndexHNSWHybrid::IndexHNSWHybrid(int d, int M, int gamma, MetricType metric)
-        : IndexHNSWFlat(d, M, gamma, metric) {
+IndexHNSWHybrid::IndexHNSWHybrid(int d, int M, int gamma, std::vector<int>& metadata, MetricType metric)
+        : IndexHNSWFlat(d, M, gamma, metric) { 
     own_fields = true;
     is_trained = true;
+    hnsw.metadata = metadata.data();
+    // debug("ntotal: %ld, metadata size; %ld\n", ntotal, metadata.size());
+    // assert(ntotal == metadata.size());
+    // if (!metadata) {
+    //     printf("no metadata!");
+    //     exit(0);
+    // }
 }
 
 // this is the same as search but it calls hnsw::hybrid_search, instead of hnsw::search
@@ -1163,6 +1217,7 @@ void IndexHNSWHybrid::search(
             idx_t k,
             float* distances,
             idx_t* labels,
+            int filter,
             const SearchParameters* params_in) const {
     FAISS_THROW_IF_NOT(k > 0);
     FAISS_THROW_IF_NOT_MSG(
@@ -1198,7 +1253,7 @@ void IndexHNSWHybrid::search(
                 dis->set_query(x + i * d);
 
                 maxheap_heapify(k, simi, idxi);
-                HNSWStats stats = hnsw.hybrid_search(*dis, k, idxi, simi, vt, params); //TODO edit to hybrid search
+                HNSWStats stats = hnsw.hybrid_search(*dis, k, idxi, simi, vt, filter, params); //TODO edit to hybrid search
                 n1 += stats.n1;
                 n2 += stats.n2;
                 n3 += stats.n3;
