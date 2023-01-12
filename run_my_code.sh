@@ -18,6 +18,6 @@ make -C build demo_test_hybrid_large
 # ./build/demos/demo_test_search 100 32 1
 # ./build/demos/demo_test_search 10 3 1 &> log.txt
 # ./build/demos/demo_test_search_small
-./build/demos/demo_test_hybrid_large #&>> log.txt
+./build/demos/demo_test_hybrid_large &> 1000_test.txt
 
 

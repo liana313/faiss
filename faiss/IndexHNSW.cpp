@@ -44,7 +44,7 @@
  *******************************************************/
 
 
-const int debugFlag = 2;
+const int debugFlag = 0;
 
 void debugTime() {
 	if (debugFlag) {
