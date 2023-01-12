@@ -39,3 +39,9 @@ target_link_libraries(demo_test_hybrid_small PRIVATE faiss)
 
 add_executable(demo_test_hybrid_large EXCLUDE_FROM_ALL demo_test_hybrid_large.cpp)
 target_link_libraries(demo_test_hybrid_large PRIVATE faiss)
+
+add_executable(make_indices EXCLUDE_FROM_ALL make_indices.cpp)
+target_link_libraries(make_indices PRIVATE faiss)
+
+add_executable(run_queries EXCLUDE_FROM_ALL run_queries.cpp)
+target_link_libraries(run_queries PRIVATE faiss)

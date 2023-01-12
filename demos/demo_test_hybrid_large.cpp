@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
     size_t nb = 1000 * 10; // size of the database we plan to index
     float attr_sel = 0.01;
     int gamma = (int) 1 / attr_sel;
+    srand(0); // seed for random number generator
 
 
     // generate metadata
