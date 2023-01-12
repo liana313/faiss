@@ -82,8 +82,8 @@ int main(int argc, char *argv[]) {
     int k = 10; // search parameter
     int d = 128; // dimension of the vectors to index
     int M = 32; // HSNW param M
-    size_t nb = 1000; // size of the database we plan to index
-    float attr_sel = 0.1;
+    size_t nb = 1000 * 10; // size of the database we plan to index
+    float attr_sel = 0.01;
     int gamma = (int) 1 / attr_sel;
 
 
@@ -150,8 +150,8 @@ int main(int argc, char *argv[]) {
         //        index.invlists->imbalance_factor());
 
         // remember a few elements from the database as queries
-        int i0 = 3;
-        int i1 = 5;
+        int i0 = 0;
+        int i1 = 99;
 
         nq = i1 - i0;
         queries.resize(nq * d);
@@ -230,11 +230,12 @@ int main(int argc, char *argv[]) {
                k,
                nq);
 
-        std::vector<faiss::idx_t> nns(k * nq);
-        std::vector<float> dis(k * nq);
+        int k_prime = k * 1;
+        std::vector<faiss::idx_t> nns(k_prime * nq);
+        std::vector<float> dis(k_prime * nq);
 
         double t1 = elapsed();
-        base_index.search(nq, queries.data(), k, dis.data(), nns.data());
+        base_index.search(nq, queries.data(), k_prime, dis.data(), nns.data());
         double t2 = elapsed();
 
         printf("[%.3f s] Query results (vector ids, then distances):\n",
@@ -242,11 +243,11 @@ int main(int argc, char *argv[]) {
 
         for (int i = 0; i < nq; i++) {
             printf("query %2d nn's: ", i);
-            for (int j = 0; j < k; j++) {
+            for (int j = 0; j < k_prime; j++) {
                 printf("%7ld (%d) ", nns[j + i * k], metadata[nns[j + i * k]]);
             }
             printf("\n     dis: \t");
-            for (int j = 0; j < k; j++) {
+            for (int j = 0; j < k_prime; j++) {
                 printf("%7g ", dis[j + i * k]);
             }
             printf("\n");

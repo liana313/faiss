@@ -7,8 +7,8 @@ Metadata: 3, 6, 7, 5, 3, 5, 6, 2, 9, 1, 2, 7, 0, 9, 3, 6, 0, 6, 2, 6, 1, 8, 7, 9
 ====================Vectors====================
 [0.000 s] Building a dataset of 1000 vectors to index
 [0.011 s] Adding the vectors to the index
-[0.354 s] Vectors added to base index 
-[0.607 s] Vectors added to hybrid index 
+[0.347 s] Vectors added to base index 
+[0.599 s] Vectors added to hybrid index 
 ====================================
 ============ BASE INDEX =============
 ====================================
@@ -35,9 +35,9 @@ Metadata: 3, 6, 7, 5, 3, 5, 6, 2, 9, 1, 2, 7, 0, 9, 3, 6, 0, 6, 2, 6, 1, 8, 7, 9
 ========= LEVEL 0 =======
 * stats on level 0, max 64 neighbors per vertex:
    1. nb of nodes: 1000
-   2. neighbors per node: 43.62 (43619)
-   3. nb of reciprocal neighbors: 32.38
-   4. nb of neighbors that are also neighbor-of-neighbors: 41.20 (41197)
+   2. neighbors per node: 43.85 (43853)
+   3. nb of reciprocal neighbors: 32.61
+   4. nb of neighbors that are also neighbor-of-neighbors: 41.49 (41493)
 ========= LEVEL 1 =======
 * stats on level 1, max 32 neighbors per vertex:
    1. nb of nodes: 26
@@ -76,9 +76,9 @@ Metadata: 3, 6, 7, 5, 3, 5, 6, 2, 9, 1, 2, 7, 0, 9, 3, 6, 0, 6, 2, 6, 1, 8, 7, 9
 ========= LEVEL 0 =======
 * stats on level 0, max 640 neighbors per vertex:
    1. nb of nodes: 1000
-   2. neighbors per node: 78.32 (78318)
-   3. nb of reciprocal neighbors: 78.32
-   4. nb of neighbors that are also neighbor-of-neighbors: 78.31 (78312)
+   2. neighbors per node: 78.31 (78314)
+   3. nb of reciprocal neighbors: 78.31
+   4. nb of neighbors that are also neighbor-of-neighbors: 78.31 (78308)
 ========= LEVEL 1 =======
 * stats on level 1, max 320 neighbors per vertex:
    1. nb of nodes: 26
@@ -94,27 +94,27 @@ Metadata: 3, 6, 7, 5, 3, 5, 6, 2, 9, 1, 2, 7, 0, 9, 3, 6, 0, 6, 2, 6, 1, 8, 7, 9
 ====================================
 ============ INDEX SIZES=============
 ====================================
-[0.911 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+[0.907 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
 ====Size of the base index is 783682 bytes
-[0.914 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
+[0.912 s] storing the hnsw index to ./tmp/index_hnsw_N=1000.faissindex
 ====Size of the hybrid index is 3118786 bytes
 ==============================================
 ====================Search====================
 ==============================================
 ====================BASE INDEX====================
-[0.923 s] Searching the 10 nearest neighbors of 2 vectors in the index
-[0.928 s] Query results (vector ids, then distances):
+[0.919 s] Searching the 10 nearest neighbors of 2 vectors in the index
+[0.925 s] Query results (vector ids, then distances):
 query  0 nn's:       3 (5)     405 (8)     947 (6)     580 (9)     175 (1)     174 (3)     848 (6)     571 (9)     214 (7)     656 (7) 
      dis: 	      0 14.6062 14.8326 15.5225 15.8045 16.4439 16.4986 16.5084 16.5902 16.7842 
-query  1 nn's:       4 (3)     356 (0)     545 (5)     481 (0)     570 (5)     497 (9)     887 (5)     636 (1)     169 (4)     282 (3) 
-     dis: 	      0 13.8684 14.4285 14.7331 15.3122 15.3229 15.6017 15.6787 15.9839  16.009 
-[0.928 s] *** Query time: 0.004772
+query  1 nn's:       4 (3)     356 (0)     545 (5)     570 (5)     497 (9)     887 (5)     636 (1)     169 (4)     282 (3)     917 (0) 
+     dis: 	      0 13.8684 14.4285 15.3122 15.3229 15.6017 15.6787 15.9839  16.009 16.1458 
+[0.925 s] *** Query time: 0.006412
 ==================== HYBRID INDEX ====================
-[0.928 s] Searching the 10 nearest neighbors of 2 vectors in the index
-[0.928 s] Query results (vector ids, then distances):
+[0.925 s] Searching the 10 nearest neighbors of 2 vectors in the index
+[0.925 s] Query results (vector ids, then distances):
 query  0 nn's:     175 (1)     812 (1)     506 (1)     443 (1)     388 (1)     618 (1)     197 (1)     972 (1)      87 (1)     636 (1) 
      dis: 	15.8045 17.2163  17.407 17.6603 17.7266 17.9086 18.1579 18.3339 18.3793 18.7385 
 query  1 nn's:     636 (1)     158 (1)     804 (1)     727 (1)     873 (1)     796 (1)     812 (1)     324 (1)     115 (1)     863 (1) 
      dis: 	15.6787  16.854 17.1273 17.6187 17.6737 17.9285 18.0695 18.1095 18.1539 18.2086 
-[0.928 s] *** Query time: 0.000150
+[0.925 s] *** Query time: 0.000158
 -----DONE-----
