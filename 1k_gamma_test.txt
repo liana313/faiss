@@ -1,0 +1,13 @@
+====================
+START: running MAKE_INDICES for hnsw...
+--nb: 100000
+[0.003 s] Set metadata, 100000 attr's generated
+[0.003 s] Index Params -- d: 128, M: 32, nb: 100000, gamma: 999
+--HNSW index created
+====================Vectors====================
+[0.003 s] Building a dataset of 100000 vectors to index
+[1.055 s] Adding the vectors to the index
+[749.337 s] Vectors added to base index 
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+Aborted (core dumped)
