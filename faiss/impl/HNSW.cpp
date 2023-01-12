@@ -320,8 +320,8 @@ void HNSW::print_neighbor_stats() const {
     // per level stats
     for (int level = 0; level <= max_level; level++) {
         printf("========= LEVEL %d =======\n", level);
-        print_edges(level);
-        // print_neighbor_stats(level);
+        // print_edges(level); // this is more detailed version with edge lists
+        print_neighbor_stats(level);
     }
 }
 

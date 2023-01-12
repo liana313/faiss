@@ -36,3 +36,6 @@ target_link_libraries(demo_test_search_small PRIVATE faiss)
 
 add_executable(demo_test_hybrid_small EXCLUDE_FROM_ALL demo_test_hybrid_small.cpp)
 target_link_libraries(demo_test_hybrid_small PRIVATE faiss)
+
+add_executable(demo_test_hybrid_large EXCLUDE_FROM_ALL demo_test_hybrid_large.cpp)
+target_link_libraries(demo_test_hybrid_large PRIVATE faiss)
