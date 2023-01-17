@@ -199,45 +199,45 @@ int main(int argc, char *argv[]) {
     //     hybrid_index.printStats();
     // }
 
-    { // get index size
-        printf("====================================\n");
-        printf("============ INDEX SIZES=============\n");
-        printf("====================================\n");
-        /* for base index */ 
-        //  file name
-        std::ostringstream ss;
-        ss << "./tmp/base_hnsw_N=" << nb << ".faissindex";
-        std::string s_tmp = ss.str();
-        const char* outfilename = s_tmp.c_str();
-        printf("[%.3f s] storing the hnsw index to %s\n",
-               elapsed() - t0,
-               outfilename);
-        // write index to disk
-        write_index(&base_index, outfilename);
-        //  measure file size
-        std::ifstream in_file(outfilename, std::ios::binary);
-        in_file.seekg(0, std::ios::end);
-        int file_size = in_file.tellg();
-        std::cout<<"====Size of the base index is"<<" "<< file_size<<" "<<"bytes" << std::endl;
+    // { // get index size
+    //     printf("====================================\n");
+    //     printf("============ INDEX SIZES=============\n");
+    //     printf("====================================\n");
+    //     /* for base index */ 
+    //     //  file name
+    //     std::ostringstream ss;
+    //     ss << "./tmp/base_hnsw_N=" << nb << ".faissindex";
+    //     std::string s_tmp = ss.str();
+    //     const char* outfilename = s_tmp.c_str();
+    //     printf("[%.3f s] storing the hnsw index to %s\n",
+    //            elapsed() - t0,
+    //            outfilename);
+    //     // write index to disk
+    //     write_index(&base_index, outfilename);
+    //     //  measure file size
+    //     std::ifstream in_file(outfilename, std::ios::binary);
+    //     in_file.seekg(0, std::ios::end);
+    //     int file_size = in_file.tellg();
+    //     std::cout<<"====Size of the base index is"<<" "<< file_size<<" "<<"bytes" << std::endl;
 
-         /* for hybrid index */ 
-        //  file name
-        std::ostringstream ss2;
-        ss2 << "./tmp/hybrid_hnsw_N=" << nb << ".faissindex";
-        s_tmp = ss2.str();
-        outfilename = s_tmp.c_str();
-        printf("[%.3f s] storing the hnsw index to %s\n",
-               elapsed() - t0,
-               outfilename);
-        // write index to disk
-        write_index(&hybrid_index, outfilename);
-        //  measure file size
-        std::ifstream in_file2(outfilename, std::ios::binary);
-        in_file2.seekg(0, std::ios::end);
-        file_size = in_file2.tellg();
-        std::cout<<"====Size of the hybrid index is"<<" "<< file_size<<" "<<"bytes" << std::endl;
+    //      /* for hybrid index */ 
+    //     //  file name
+    //     std::ostringstream ss2;
+    //     ss2 << "./tmp/hybrid_hnsw_N=" << nb << ".faissindex";
+    //     s_tmp = ss2.str();
+    //     outfilename = s_tmp.c_str();
+    //     printf("[%.3f s] storing the hnsw index to %s\n",
+    //            elapsed() - t0,
+    //            outfilename);
+    //     // write index to disk
+    //     write_index(&hybrid_index, outfilename);
+    //     //  measure file size
+    //     std::ifstream in_file2(outfilename, std::ios::binary);
+    //     in_file2.seekg(0, std::ios::end);
+    //     file_size = in_file2.tellg();
+    //     std::cout<<"====Size of the hybrid index is"<<" "<< file_size<<" "<<"bytes" << std::endl;
         
-    }
+    // }
     
     printf("==============================================\n");
     printf("====================Search====================\n");
