@@ -27,6 +27,10 @@ make -C build make_indices
 # ./build/demos/make_indices 100000 &>> indices.txt
 # ./build/demos/make_indices 1000000 &>> indices.txt
 # ./build/demos/make_indices 10000000 &> 1mil_test.txt
-./build/demos/make_indices 100000 &> 1k_gamma_test.txt
-./build/demos/make_indices 1000000 &> 1mil_gamma1k_test.txt
+# ./build/demos/make_indices 100000 &> 1k_gamma_test.txt
+# ./build/demos/make_indices 1000000 &> 1mil_gamma1k_test.txt
 
+./build/demos/make_indices 10000 10 &> n=10k_gamma=10_test.txt 
+./build/demos/make_indices 10000 100 &> n=10k_gamma=1h_test.txt 
+./build/demos/make_indices 100000 10 &> n=100k_gamma=10_test.txt 
+./build/demos/make_indices 100000 100 &> n=100k_gamma=1h_test.txt 
