@@ -24,6 +24,7 @@
 #include <iosfwd>
 #include <faiss/impl/platform_macros.h>
 #include <assert.h>     /* assert */
+#include <thread>
 
 
 
@@ -73,7 +74,9 @@ double elapsed() {
 
 //  args are nb, M, gamma
 int main(int argc, char *argv[]) {
-    printf("====================\nSTART: running MAKE_INDICES for hnsw...\n");
+    unsigned int nthreads = std::thread::hardware_concurrency();
+    std::cout << "====================\nSTART: running MAKE_INDICES for hnsw --" << nthreads << "cores\n" << std::endl;
+    // printf("====================\nSTART: running MAKE_INDICES for hnsw --...\n");
     double t0 = elapsed();
     
     int efc = 40; // default is 40
