@@ -14,7 +14,8 @@ make -C build demo_test_search_small
 make -C build demo_test_hybrid_small
 make -C build demo_test_hybrid_large
 make -C build make_indices
-
+# make -C build demo_sift1M
+make -C build make_sift_indices
 
 # executable to run
 # ./build/demos/demo_test_search 100 32 1
@@ -43,6 +44,19 @@ make -C build make_indices
 # ./build/demos/make_indices 100000 100 &> n=100k_gamma=1h_test.txt 
 
 
-./build/demos/make_indices 10000 1 &> n=10k_gamma=1_test.txt 
-./build/demos/make_indices 100000 1 &> n=100k_gamma=1_test.txt 
+# ./build/demos/make_indices 10000 1 &> n=10k_gamma=1_test.txt 
+# ./build/demos/make_indices 100000 1 &> n=100k_gamma=1_test.txt 
+
+
+# ./build/demos/make_sift_indices 1000 10
+
+
+for N in 10000 100000
+do 
+    for gamma in 1 10 40 70 100
+    do 
+        # echo $N $gamma
+        ./build/demos/make_sift_indices $N $gamma &> sift_n=${N}k_gamma=${gamma}_test.txt
+    done
+done
 

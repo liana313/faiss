@@ -45,3 +45,6 @@ target_link_libraries(make_indices PRIVATE faiss)
 
 add_executable(run_queries EXCLUDE_FROM_ALL run_queries.cpp)
 target_link_libraries(run_queries PRIVATE faiss)
+
+add_executable(make_sift_indices EXCLUDE_FROM_ALL make_sift_indices.cpp)
+target_link_libraries(make_sift_indices PRIVATE faiss)
