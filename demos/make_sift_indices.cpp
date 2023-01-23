@@ -15,8 +15,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-// #include <faiss/AutoTune.h>
-// #include <faiss/index_factory.h>
 
 // added these
 #include <stdlib.h>
