@@ -50,7 +50,7 @@ make -C build make_sift_indices
 
 # ./build/demos/make_sift_indices 1000 10
 
-
+# run this on m5d.4xlarge, too slow on xlarge
 for N in 10000 100000
 do 
     for gamma in 1 10 40 70 100
